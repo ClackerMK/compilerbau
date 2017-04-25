@@ -1,0 +1,90 @@
+PDefs. Program ::= [Def];
+
+terminator Def "";
+
+comment "//";
+comment "/*" "*/";
+comment "#";
+
+DFun. Def ::= Inline Type Ident "(" [Arg] ")" "{" [Stm] "}";
+separator Arg ",";
+
+Arg. Arg ::= Const Type ArgId Default;
+
+Const. Const ::= "const";
+NotConst. Const ::=;
+
+Inline. Inline ::= "inline";
+NotInline. Inline ::= ;
+
+ArgIdNamed. ArgId ::= Ident;
+ArgIdNameless. ArgId ::= ;
+
+Default. Default ::= "=" Value;
+
+ValInt. Value ::= Integer;
+ValDouble. Value ::= Double;
+ValChar. Value ::=  Char;
+ValString. Value ::= [ValString];
+
+ValSingleString. ValString ::= String;
+separator ValString "";
+
+StmDec. Stm ::= [Decl] ";";
+StmExp. Stm ::= Exp ";";
+StmRet. Stm ::= "return" Exp ";";
+StmWhile. Stm ::= "while (" Exp ")" Stm;
+StmDo. Stm ::= "do" Stm ";" "while" "(" Exp ")" ";";
+StmFor. Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm;
+StmBlock. Stm ::= "{" [Stm] "}";
+StmIf. Stm ::= "if" "(" Exp ")" Stm;
+StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
+StmTypeDef. Stm ::= "typedef" Type Ident;
+StmStructDef. Stm ::= "struct" Ident "{" [Decl] "}" ";";
+terminator Decl "";
+terminator Stm "";
+
+ExVal. 		Exp16 ::= Value;
+ExName. 	Exp16 ::= Ident;
+ExIndex. 	Exp15 ::= Exp "[" Exp "]";
+ExQualCnst. Exp15 ::= Ident "::" Ident;
+ExCall. 	Exp15 ::= Ident "(" [Exp] ")";
+ExProj. 	Exp14 ::= Exp ProjType Ident;
+ProjPoint. ProjType ::= ".";
+ProjPoint. ProjType ::= "->";
+ExPostInc. 	Exp14 ::= Exp "++";
+ExPostDec. 	Exp14 ::= Exp "--";
+ExDeref. 	Exp14 ::= "*" Exp;
+ExPreInc. 	Exp13 ::= "++" Exp;
+ExPreDec. 	Exp13 ::= "--" Exp;
+ExNot. 		Exp13 ::= "!" Exp;
+ExMult. 	Exp12 ::= Exp "*" Exp;
+ExDiv. 		Exp12 ::= Exp "/" Exp;
+ExMod. 		Exp12 ::= Exp "%" Exp;
+ExAdd. 		Exp11 ::= Exp "+" Exp;
+ExSub. 		Exp11 ::= Exp "-" Exp;
+ExLeftShft.	Exp10 ::= Exp "<<" Exp;
+ExRightSft.	Exp10 ::= Exp ">>" Exp;
+ExSmaller. 	Exp9 ::= Exp "<" Exp;
+ExBigger. 	Exp9 ::= Exp ">" Exp;
+ExSmallerEq. Exp9 ::= Exp "<=" Exp;
+ExGreaterEq. Exp9 ::= Exp ">=" Exp;
+ExEqual.	Exp8 ::= Exp "==" Exp;
+ExInequal.	Exp8 ::= Exp "==" Exp;
+ExConjunc.	Exp4 ::= Exp "&&" Exp;
+ExDisjunc.	Exp3 ::= Exp "||" Exp;
+ExAssign.	Exp2 ::= Exp "=" Exp;
+ExAddAssign. Exp2 ::= Exp "+=" Exp;
+ExSubAssign. Exp2 ::= Exp "-=" Exp;
+ExCond.		Exp2 ::= Exp "?" Exp ":" Exp;
+ExThrow.	Exp1 ::= "throw" Exp;
+coercions Exp 16;
+separator Exp ",";
+
+TInt. Type ::= "int";
+TDouble. Type ::= "double";
+TBool. Type ::= "bool";
+TVoid. Type ::= "void";
+
+
+DecVar. Decl ::= Const Type Default
