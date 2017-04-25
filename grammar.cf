@@ -1,0 +1,62 @@
+PDefs. Program ::= [Def];
+  terminator Def "";
+
+comment "//";
+comment "/*" "*/";
+
+comment "#";
+
+DFun.       Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}";
+DFunIn.     Def ::= "inline" Type Id "(" [Arg] ")" "{" [Stm] "}";
+  separator Arg ",";
+  terminator Stm "";
+
+DTypdf.     Def ::= "typedef" Type Id ";";
+
+DvarDec.    Def ::= Type Id "," [Id] ";";
+  separator Id ",";
+DVarIn.     Def ::= Type Id "=" Exp ";";
+
+DStruct.    Def ::= "struct" Id "{" [StructDec] "}" ";";
+Struct.     StructDec ::= Type Id ";";
+  terminator StructDec "";
+
+ArgDec1.     Arg ::= Type;
+ArgDec2.     Arg ::= Type Id;
+ArgDec3.     Arg ::= Type Id "=" Exp;
+ArgConst.    Arg ::= "const" Type "&" Id;
+
+Statm.       Stm ::= Exp ";";
+StmReturn.   Stm ::= "return" Exp ";";
+StmWhile.    Stm ::= "while" "(" Exp ")" Stm ;
+StmDoWhil.   Stm ::= "do" Stm "while" "(" Exp ")" Stm;
+StmFor.      Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Exp ")" Stm;
+StmIf.       Stm ::= "if" "(" Exp ")" Stm;
+StmIfElse.   Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm;
+StmBlock.    Stm ::= "{" [Stm] "}";
+StmTypeDef.  Stm ::= "typedef" Type Id ";";
+StmStruct.   Stm ::= "struct" Id "{" [StructDec] "}" ";" ;
+
+ExInt.  	  Exp16 ::= Integer;
+ExDouble.	  Exp16 ::= Double;
+ExChar.		  Exp16 ::= Char;
+ExString.	  Exp16 ::= [String];
+  coercions Exp 16;
+ExIndex. 		Exp15 ::= Id "[" Exp "]";
+ExFunCall.	Exp15 ::= FunId "(" [Exp] ")";
+QQualif. 	  FunId ::= [Name];
+  separator Name "::";
+
+NameIdent.  Name ::= Id;
+
+ExLeftSh.  	Exp10 ::= Exp10 "<<" Exp11 ;
+ExRightSh.  Exp10 ::= Exp10 ">>" Exp11 ;
+
+token Id (letter (letter | digit | '_')*) ;
+
+Typbool.		Type ::= "bool" ;
+Typdouble.	Type ::= "double" ;
+Typint. 		Type ::= "int" ;
+Typvoid.		Type ::= "void" ;
+  separator String "" ;
+  separator Exp ",";
