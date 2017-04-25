@@ -1,0 +1,85 @@
+PDefs. Program ::= [Def];
+  terminator Def "";
+
+comment "//";
+comment "/*" "*/";
+
+comment "#";
+
+DFun.       Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}";
+DFunIn.     Def ::= "inline" Type Id "(" [Arg] ")" "{" [Stm] "}";
+  separator Arg "," ;
+  terminator Stm "" ;
+
+DTypdf.     Def ::= "typedef" Type Id ";";
+
+DvarDec.    Def ::= Type Id "," [Id] ";";
+  separator Id ",";
+DVarIn.     Def ::= Type Id "=" Exp ";";
+
+DStruct.    Def ::= "struct" Id "{" [StructDec] "}" ";";
+Struct.     StructDec ::= Type Id ";";
+  terminator StructDec "";
+
+ArgDec1.     Arg ::= Type;
+ArgDec2.     Arg ::= Type Id;
+ArgDec3.     Arg ::= Type Id "=" Exp;
+ArgConst.    Arg ::= "const" Type "&" Id;
+
+Statm.       Stm ::= Exp ";";
+StmReturn.   Stm ::= "return" Exp ";";
+StmWhile.    Stm ::= "while" "(" Exp ")" Stm ;
+StmDoWhil.   Stm ::= "do" Stm "while" "(" Exp ")" Stm;
+StmFor.      Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Exp ")" Stm;
+StmIf.       Stm ::= "if" "(" Exp ")" Stm;
+StmIfElse.   Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm;
+StmBlock.    Stm ::= "{" [Stm] "}";
+StmTypeDef.  Stm ::= "typedef" Type Id ";";
+StmStruct.   Stm ::= "struct" Id "{" [StructDec] "}" ";";
+
+ExInt.  	  Exp16 ::= Integer;
+ExDouble.	  Exp16 ::= Double;
+ExChar.		  Exp16 ::= Char;
+ExString.	  Exp16 ::= [String];
+  coercions Exp 16;
+ExIndex. 		Exp15 ::= Id "[" Exp "]";
+ExFunCall.	Exp15 ::= Id "(" [Exp] ")";
+ExStrProj1. Exp14 ::= Exp "." Exp;
+ExStrProj2. Exp14 ::= Exp "->" Exp;
+ExInc1.     Exp14 ::= Exp "++";
+ExDec1.     Exp14 ::= Exp "--";
+ExDeref.    Exp14 ::= "*" Exp;
+ExInc2.     Exp13 ::= "++" Exp;
+ExDec2.     Exp13 ::= "--" Exp;
+ExNeg.      Exp13 ::= "!" Exp;
+ExMult.     Exp12 ::= Exp "*" Exp;
+ExDiv.      Exp12 ::= Exp "/" Exp;
+ExRem.      Exp12 ::= Exp "%" Exp;
+ExpAdd.     Exp11 ::= Exp "+" Exp;
+ExSub.      Exp11 ::= Exp "-" Exp;
+ExLeftSh.  	Exp10 ::= Exp "<<" Exp;
+ExRightSh.  Exp10 ::= Exp ">>" Exp;
+ExComp1.    Exp9 ::= Exp "<" Exp;
+ExComp2.    Exp9 ::= Exp ">" Exp;
+ExComp3.    Exp9 ::= Exp ">=" Exp;
+ExComp4.    Exp9 ::= Exp "<=" Exp;
+ExEqual.    Exp8 ::= Exp "==" Exp;
+ExInequal.  Exp8 ::= Exp "!=" Exp;
+ExConj.     Exp4 ::= Exp "&&" Exp;
+ExDisj.     Exp3 ::= Exp "||" Exp;
+ExAssig1.   Exp2 ::= Exp "=" Exp;
+ExAssig2.   Exp2 ::= Exp "+=" Exp;
+ExAssig3.   Exp2 ::= Exp "-=" Exp;
+ExCond1.    Exp2 ::= Exp "?" Exp;
+ExCond2.    Exp2 ::= Exp ":" Exp;
+ExExep.     Exp1 ::= "throw" Exp;
+
+token Id (letter (letter | digit | '_')*);
+
+Typbool.		Type ::= "bool";
+Typdouble.	Type ::= "double";
+Typint. 		Type ::= "int";
+Typvoid.		Type ::= "void";
+
+separator String "";
+separator Exp ",";
