@@ -8,8 +8,8 @@ comment "#";
 
 DFun.       Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}";
 DFunIn.     Def ::= "inline" Type Id "(" [Arg] ")" "{" [Stm] "}";
-  separator Arg "," ;
-  terminator Stm "" ;
+  separator Arg ",";
+  terminator Stm "";
 
 DTypdf.     Def ::= "typedef" Type Id ";";
 
@@ -37,17 +37,17 @@ StmBlock.    Stm ::= "{" [Stm] "}";
 StmTypeDef.  Stm ::= "typedef" Type Id ";";
 StmStruct.   Stm ::= "struct" Id "{" [StructDec] "}" ";" ;
 
-ExInt.  	  Exp16 ::= Integer ;
-ExDouble.	  Exp16 ::= Double ;
-ExChar.		  Exp16 ::= Char ;
-ExString.	  Exp16 ::= [String] ;
-  coercions Exp 16 ;
-ExIndex. 		Exp15 ::= Id "[" Exp "]" ;
-ExFunCall.	Exp15 ::= FunId "(" [Exp] ")" ;
-QQualif. 	  FunId ::= [Name] ;
-  separator Name "::" ;
+ExInt.  	  Exp16 ::= Integer;
+ExDouble.	  Exp16 ::= Double;
+ExChar.		  Exp16 ::= Char;
+ExString.	  Exp16 ::= [String];
+  coercions Exp 16;
+ExIndex. 		Exp15 ::= Id "[" Exp "]";
+ExFunCall.	Exp15 ::= FunId "(" [Exp] ")";
+QQualif. 	  FunId ::= [Name];
+  separator Name "::";
 
-NameIdent.  Name ::= Id ;
+NameIdent.  Name ::= Id;
 
 ExLeftSh.  	Exp10 ::= Exp10 "<<" Exp11 ;
 ExRightSh.  Exp10 ::= Exp10 ">>" Exp11 ;
@@ -58,6 +58,5 @@ Typbool.		Type ::= "bool" ;
 Typdouble.	Type ::= "double" ;
 Typint. 		Type ::= "int" ;
 Typvoid.		Type ::= "void" ;
-
-separator String "" ;
-separator Exp "," ;
+  separator String "" ;
+  separator Exp ",";
