@@ -18,9 +18,10 @@ Inline. Inline ::= "inline";
 NotInline. Inline ::= ;
 
 ArgIdNamed. ArgId ::= Ident;
-ArgIdNameless. ArgId ::= ;
+ArgIdNameless. ArgId ::=;
 
 Default. Default ::= "=" Value;
+NoDefault. Default ::=;
 
 ValInt. Value ::= Integer;
 ValDouble. Value ::= Double;
@@ -41,13 +42,13 @@ StmIf. Stm ::= "if" "(" Exp ")" Stm;
 StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
 StmTypeDef. Stm ::= "typedef" Type Ident;
 StmStructDef. Stm ::= "struct" Ident "{" [Decl] "}" ";";
-terminator Decl "";
+separator Decl ",";
 terminator Stm "";
 
 ExVal. 		Exp16 ::= Value;
 ExName. 	Exp16 ::= Ident;
 ExIndex. 	Exp15 ::= Exp "[" Exp "]";
-ExQualCnst. Exp15 ::= Ident "::" Ident;
+ExQualCnst. Exp15 ::= [QCnst];
 ExCall. 	Exp15 ::= Ident "(" [Exp] ")";
 ExProj. 	Exp14 ::= Exp ProjType Ident;
 ProjPoint. ProjType ::= ".";
@@ -81,11 +82,16 @@ ExThrow.	Exp1 ::= "throw" Exp;
 coercions Exp 16;
 separator Exp ",";
 
-TInt. Type ::= "int";
-TDouble. Type ::= "double";
-TBool. Type ::= "bool";
-TVoid. Type ::= "void";
-TQualCons. Type ::= Ident "::" Ident
+TInt. 		Type ::= "int";
+TDouble. 	Type ::= "double";
+TBool. 		Type ::= "bool";
+TVoid. 		Type ::= "void";
+TQualCnst. 	Type ::= [QCnst];
+separator 	Type ",";
 
+QualCnst.   QCnst ::= Ident;
+QualCnstTemplate. QCnst ::= Ident "<" [Type] ">";
+separator QCnst "::";
 
-DecVar. Decl ::= Const Type Default
+DecVar. Decl ::= Type Ident Default;
+DecVarConst. Decl ::= "const" Type Ident Default;
