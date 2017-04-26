@@ -85,6 +85,7 @@ TInt. Type ::= "int";
 TDouble. Type ::= "double";
 TBool. Type ::= "bool";
 TVoid. Type ::= "void";
+TQualCons. Type ::= Ident "::" Ident
 
 
 DecVar. Decl ::= Const Type Default
