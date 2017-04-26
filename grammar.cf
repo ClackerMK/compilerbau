@@ -42,7 +42,10 @@ ExDouble.	  Exp16 ::= Double;
 ExChar.		  Exp16 ::= Char;
 ExString.	  Exp16 ::= [String];
   coercions Exp 16;
+  separator String "";
 ExIndex. 		Exp15 ::= Id "[" Exp "]";
+  separator Exp ",";
+ExQualConst.Exp15 ::= Id "::" Id;
 ExFunCall.	Exp15 ::= Id "(" [Exp] ")";
 ExStrProj1. Exp14 ::= Exp "." Exp;
 ExStrProj2. Exp14 ::= Exp "->" Exp;
@@ -80,6 +83,3 @@ Typbool.		Type ::= "bool";
 Typdouble.	Type ::= "double";
 Typint. 		Type ::= "int";
 Typvoid.		Type ::= "void";
-
-separator String "";
-separator Exp ",";
