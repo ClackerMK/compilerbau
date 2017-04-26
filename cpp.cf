@@ -11,7 +11,7 @@ separator Arg ",";
 
 DTypeDef. Def ::= TypeDef;
 DStructDef. Def ::= StructDef;
-DUsing. Def ::= "using" [QCnst];
+DUsing. Def ::= "using" [QCnst] ";";
 
 Arg. Arg ::= Const Type ArgId Default;
 
@@ -38,7 +38,7 @@ separator ValString "";
 TypeDef. TypeDef ::= "typedef" Type Ident;
 StructDef. StructDef ::= "struct" Ident "{" [Decl] "}" ";";
 
-StmDec. Stm ::= [Decl] ";";
+StmDec. Stm ::= Decl ";";
 StmExp. Stm ::= Exp ";";
 StmRet. Stm ::= "return" Exp ";";
 StmWhile. Stm ::= "while (" Exp ")" Stm;
@@ -50,8 +50,7 @@ StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
 
 StmTypeDef. Stm ::= TypeDef;
 StmStructDef. Stm ::= StructDef;
-terminator Decl ",";
-
+terminator Stm "";
 
 ExVal. 		Exp16 ::= Value;
 ExName. 	Exp16 ::= Ident;
@@ -101,5 +100,9 @@ QualCnst.   QCnst ::= Ident;
 QualCnstTemplate. QCnst ::= Ident "<" [Type] ">";
 separator QCnst "::";
 
-DecVar. Decl ::= Type Ident Default;
-DecVarConst. Decl ::= "const" Type Ident Default;
+DecVar. Decl ::= Type [DeclName];
+DecVarConst. Decl ::= "const" Type  [DeclName];
+terminator Decl ";";
+
+DeclName. DeclName ::= Ident Default;
+separator DeclName ",";
