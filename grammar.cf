@@ -13,7 +13,7 @@ DFunIn.     Def ::= "inline" Type Id "(" [Arg] ")" "{" [Stm] "}";
 
 DTypdf.     Def ::= "typedef" Type Id ";";
 
-DvarDec.    Def ::= Type Id "," [Id] ";";
+DVarDec.    Def ::= Type Id "," [Id] ";";
   separator Id ",";
 DVarIn.     Def ::= Type Id "=" Exp ";";
 
@@ -21,12 +21,19 @@ DStruct.    Def ::= "struct" Id "{" [StructDec] "}" ";";
 Struct.     StructDec ::= Type Id ";";
   terminator StructDec "";
 
+Dusing.      Def ::= "using" Type ";";
+
 ArgDec1.     Arg ::= Type;
 ArgDec2.     Arg ::= Type Id;
 ArgDec3.     Arg ::= Type Id "=" Exp;
 ArgConst.    Arg ::= "const" Type "&" Id;
 
-Statm.       Stm ::= Exp ";";
+StmExp.      Stm ::= Exp ";";
+StmDec.      Stm ::= [Dec] ";";
+StmDec1. 		 Dec ::= Type Id ";" ;
+StmDec2.     Dec ::= Type Id "=" Exp ";" ;
+StmDec3.	   Dec ::= Type Id "," [Id] ";" ;
+  terminator Dec "";
 StmReturn.   Stm ::= "return" Exp ";";
 StmWhile.    Stm ::= "while" "(" Exp ")" Stm ;
 StmDoWhil.   Stm ::= "do" Stm "while" "(" Exp ")" Stm;
