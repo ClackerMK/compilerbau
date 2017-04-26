@@ -9,6 +9,9 @@ comment "#";
 DFun. Def ::= Inline Type Ident "(" [Arg] ")" "{" [Stm] "}";
 separator Arg ",";
 
+DTypeDef. Def ::= TypeDef;
+DStructDef. Def ::= StructDef;
+
 Arg. Arg ::= Const Type ArgId Default;
 
 Const. Const ::= "const";
@@ -30,6 +33,9 @@ ValString. Value ::= [ValString];
 ValSingleString. ValString ::= String;
 separator ValString "";
 
+TypeDef. TypeDef ::= "typedef" Type Ident;
+StructDef. StructDef ::= "struct" Ident "{" [Decl] "}" ";";
+
 StmDec. Stm ::= [Decl] ";";
 StmExp. Stm ::= Exp ";";
 StmRet. Stm ::= "return" Exp ";";
@@ -39,8 +45,8 @@ StmFor. Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm;
 StmBlock. Stm ::= "{" [Stm] "}";
 StmIf. Stm ::= "if" "(" Exp ")" Stm;
 StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
-StmTypeDef. Stm ::= "typedef" Type Ident;
-StmStructDef. Stm ::= "struct" Ident "{" [Decl] "}" ";";
+StmTypeDef. Stm ::= TypeDef;
+StmStructDef. Stm ::= StructDef;
 terminator Decl "";
 terminator Stm "";
 
