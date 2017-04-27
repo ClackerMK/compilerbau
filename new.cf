@@ -1,0 +1,104 @@
+PDefs. Program ::= [Def];
+
+terminator Def "";
+
+
+comment "//";
+comment "/*" "*/";
+comment "#";
+
+DFun. Def 		::= Fun;
+DIFun. Def 		::= InFun;
+DTypeDef. Def 	::= TypeDef;
+DStructDef. Def ::= StructDef;
+
+InlineFunction. InFun ::= "inline" Fun;
+FuctionHead. Fun ::= Type UIdent "(" [Arg] ")" FunBod;
+FunctionBody. FunBod ::= ";";
+FunctionBodyStm. FunBod ::= "{" [Stm] "}";
+
+
+TypeDef. TypeDef ::= "typedef" Type UIdent ";";
+StructDef. StructDef ::= "struct" UIdent "{" [DecVar] "}" ";";
+
+ArgIdLess. Arg ::= Type;
+ArgDecVar. Arg ::= DecVar;
+separator Arg ",";
+
+ArgId. 		DecVar ::= Type UIdent;
+ArgIdDefault. DecVar ::= Type UIdent "=" Exp;
+terminator DecVar ";";
+
+TQConst. Type ::= QConst;
+TInt. 	 Type ::= "int";
+TDouble. Type ::= "double";
+TBool.	 Type ::= "bool";
+TVoid.	 Type ::= "void";
+TConst. CType ::= "const" Type;
+TRef. RType ::= Type "&";
+separator nonempty Type ",";
+
+VInt. Value ::= Integer;
+VDouble. Value ::= Double;
+VChar. Value ::= Char;
+ValConcatString. Value ::= [ValString];
+
+ValSingleString. ValString ::= String;
+separator nonempty ValString "";
+
+
+QConstRec. QConst ::= QConst "::" QConst;
+QConstBase. QConst ::= UIdent;
+QConstTemplateBase. QConst ::= TInstanciation; 
+Template. TInstanciation ::= UIdent "<" [Type] ">";
+
+StmDec. Stm ::= DecVar ";";
+StmExp. Stm ::= Exp ";";
+StmRet. Stm ::= "return" Exp ";";
+StmWhile. Stm ::= "while" "(" Exp ")" Stm;
+StmDo. Stm ::= "do" Stm "while" "(" Exp ")" ";";
+StmFor. Stm ::= "for" "(" DecVar ";" Exp ";" Exp ")" Stm;
+StmBlock. Stm ::= "{" [Stm] "}";
+StmIf. Stm ::= "if" "(" Exp ")" Stm;
+StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
+
+StmTypeDef. Stm ::= TypeDef;
+StmStructDef. Stm ::= StructDef;
+separator nonempty Stm "";
+
+token UIdent (letter (letter | digit | '_')*) ;
+
+ExValue.	Exp16 ::= Value;
+ExIndex. 	Exp15 ::= Exp16 "[" Exp16 "]";
+ExCall. 	Exp15 ::= Exp16 "(" [Exp] ")";
+ExQConst. 	Exp15 ::= QConst;
+ExProjPoint.Exp14 ::= Exp15 "." Exp15;
+ExProjArrow.Exp14 ::= Exp15 "->" Exp15; 
+ExPostInc. 	Exp14 ::= Exp15 "++";
+ExPostDec. 	Exp14 ::= Exp15 "--";
+ExDeref. 	Exp14 ::= "*" Exp15;
+ExPreInc. 	Exp13 ::= "++" Exp14;
+ExPreDec. 	Exp13 ::= "--" Exp14;
+ExNot. 		Exp13 ::= "!" Exp14;
+ExMult. 	Exp12 ::= Exp13 "*" Exp13;
+ExDiv. 		Exp12 ::= Exp13 "/" Exp13;
+ExMod. 		Exp12 ::= Exp13 "%" Exp13;
+ExAdd. 		Exp11 ::= Exp12 "+" Exp12;
+ExSub. 		Exp11 ::= Exp12 "-" Exp12;
+ExLeftShft.	Exp10 ::= Exp11 "<<" Exp11;
+ExRightSft.	Exp10 ::= Exp11 ">>" Exp11;
+ExLess. 	Exp9 ::= Exp10 "<" Exp10;
+ExGreater. 	Exp9 ::= Exp10 ">" Exp10;
+ExLessEq. 	Exp9 ::= Exp10 "<=" Exp10;
+ExGreaterEq. Exp9 ::= Exp10 ">=" Exp10;
+ExEqual.	Exp8 ::= Exp9 "==" Exp9;
+ExInequal.	Exp8 ::= Exp9 "!=" Exp9;
+ExConjunc.	Exp4 ::= Exp5 "&&" Exp5;
+ExDisjunc.	Exp3 ::= Exp4 "||" Exp4;
+ExAssign.	Exp2 ::= Exp3 "=" Exp3;
+ExAddAssign. Exp2 ::= Exp3 "+=" Exp3;
+ExSubAssign. Exp2 ::= Exp3 "-=" Exp3;
+ExCond.		Exp2 ::= Exp3 "?" Exp3 ":" Exp3;
+ExThrow.	Exp1 ::= "throw" Exp;
+coercions Exp 16;
+separator Exp ",";
