@@ -7,6 +7,7 @@ comment "/*" "*/";
 comment "#";
 
 DFun. Def ::= Inline Type Ident "(" [Arg] ")" "{" [Stm] "}";
+DecFun. Def ::= Inline Type Ident "(" [Arg] ")" ";";
 separator Arg ",";
 
 DTypeDef. Def ::= TypeDef;
@@ -35,14 +36,14 @@ ValString. Value ::= [ValString];
 ValSingleString. ValString ::= String;
 separator ValString "";
 
-TypeDef. TypeDef ::= "typedef" Type Ident;
+TypeDef. TypeDef ::= "typedef" Type Ident ";";
 StructDef. StructDef ::= "struct" Ident "{" [Decl] "}" ";";
 
 StmDec. Stm ::= Decl ";";
 StmExp. Stm ::= Exp ";";
 StmRet. Stm ::= "return" Exp ";";
 StmWhile. Stm ::= "while" "(" Exp ")" Stm;
-StmDo. Stm ::= "do" Stm ";" "while" "(" Exp ")" ";";
+StmDo. Stm ::= "do" Stm "while" "(" Exp ")" ";";
 StmFor. Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm;
 StmBlock. Stm ::= "{" [Stm] "}";
 StmIf. Stm ::= "if" "(" Exp ")" Stm;
@@ -57,9 +58,8 @@ ExName. 	Exp16 ::= Ident;
 ExIndex. 	Exp15 ::= Exp "[" Exp "]";
 ExQualCnst. Exp15 ::= [QCnst];
 ExCall. 	Exp15 ::= Exp "(" [Exp] ")";
-ExProj. 	Exp14 ::= Exp ProjType Ident;
-ProjPoint. ProjType ::= ".";
-ProjPoint. ProjType ::= "->";
+ExProjPoint.Exp14 ::= Exp "." Exp;
+ExProjArrow.Exp14 ::= Exp "->" Exp; 
 ExPostInc. 	Exp14 ::= Exp "++";
 ExPostDec. 	Exp14 ::= Exp "--";
 ExDeref. 	Exp14 ::= "*" Exp;
@@ -94,6 +94,7 @@ TDouble. 	Type ::= "double";
 TBool. 		Type ::= "bool";
 TVoid. 		Type ::= "void";
 TQualCnst. 	Type ::= [QCnst];
+TReference. Type ::= Type "&";
 separator 	Type ",";
 
 QualCnst.   QCnst ::= Ident;
@@ -104,5 +105,6 @@ DecVar. Decl ::= Type [DeclName];
 DecVarConst. Decl ::= "const" Type  [DeclName];
 terminator Decl ";";
 
-DeclName. DeclName ::= Ident Default;
+DeclName. DeclName ::= Ident Exp;
+DeclNameInitial. DeclName ::= Ident Exp "=" Exp;
 separator DeclName ",";
