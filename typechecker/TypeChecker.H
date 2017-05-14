@@ -9,13 +9,15 @@
 
 class FunctionInfo {
 public:
-    FunctionInfo(Id id);
+    FunctionInfo(Id id, Type *type);
     ~FunctionInfo();
 
     Id id;
     Type *funcType;
     //parameter map, map type to parameter ID of function
-    std::map<Type*, Id> params;
+    std::map<Id, Type*> params;
+    //map for variable defined/declared in function
+    std::map<Id, Type*> vars;
 
 };
 
@@ -28,6 +30,8 @@ class TypeChecker : public Visitor
 private:
     class Env {
     public:
+        Env();
+        ~Env();
         //expands the environment by a function
         Env *expand(Env *env, Id *funcId, FunctionInfo *func);
         //expands the environment by a variable
@@ -36,7 +40,8 @@ private:
         static Type* lookUpVar(Id *id);
         //function table, map function ID to corresponding FunctionInfo object
         std::map<Id, FunctionInfo*> funcTable;
-
+        FunctionInfo *visitingFunc;
+        Type *currentType;
     };
     Env *env;
 

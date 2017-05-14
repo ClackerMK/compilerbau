@@ -5,18 +5,31 @@
    algorithms to use context information differently. */
 
 #include "TypeChecker.H"
+#include <typeinfo>
 
-FunctionInfo::FunctionInfo(Id id) {
+
+FunctionInfo::FunctionInfo(Id id, Type *type) {
     this->id = id;
+    this->funcType = type;
 }
 
 
 //constructor
+TypeChecker::Env::Env() {}
+
+//destructor
+TypeChecker::Env::~Env() {}
+
+//constructor
 TypeChecker::TypeChecker() {
     this->passNo = 0;
+    this->env = new TypeChecker::Env();
 }
 
-TypeChecker::~TypeChecker() {}
+//destructor
+TypeChecker::~TypeChecker() {
+    delete this->env;
+}
 
 void TypeChecker::typeCheck(Program* p) {
     p->accept(this);    //build a symbol table with all function and parameter types
@@ -33,35 +46,37 @@ void TypeChecker::visitType(Type* t) {} //abstract class
 
 void TypeChecker::visitPDefs(PDefs *pdefs)
 {
+
+            //debug
+    std::cout << "visitPDefs " << &(pdefs) << std::endl;
   /* Code For PDefs Goes Here */
-    if (this->passNo == 0) {
-        pdefs->listdef_->accept(this);
-    }
+    pdefs->listdef_->accept(this);
 
 }
 
 void TypeChecker::visitDFun(DFun *dfun){
+
+            //debug
+    std::cout << "visitDFun " << &(dfun) << std::endl;
   /* Code For DFun Goes Here */
     if (this->passNo == 0) {
-        FunctionInfo *funcId = new FunctionInfo(dfun->id_);
-        funcId->funcType = dfun->type_;
-
-         std::map<Id, FunctionInfo*>::iterator it;
-         if (it == this->env->funcTable.end()) {
-            //add function to function table
-            this->env->funcTable.insert(std::pair<Id, FunctionInfo*>(dfun->id_, funcId));
-         } else {
-                std::cout << "TYPE ERROR\n\n" << "Function " << funcId->id << " has already been declared." << std::endl;
-                exit(1);
-            }
 
 
+        //test whether function already in funcTable
+        std::map<Id, FunctionInfo*>::iterator it = this->env->funcTable.find(dfun->id_);
+        if (it != this->env->funcTable.end()) {
+            std::cout << "TYPE ERROR\n\n" << "Function " << dfun->id_ << " has already been declared." << std::endl;
+            exit(1);
+        }
+        //add function to funcTable
+        FunctionInfo *funcId = new FunctionInfo(dfun->id_, dfun->type_);
+        this->env->funcTable.insert(std::pair<Id, FunctionInfo*>(dfun->id_, funcId));
+
+
+        this->env->visitingFunc = funcId;
         dfun->listarg_->accept(this);
+        this->env->visitingFunc = NULL;
 
-
-
-
-        //env->expand(env, dfun->id_, this->curFunc); //add current function to environment
 
 
     }
@@ -69,7 +84,9 @@ void TypeChecker::visitDFun(DFun *dfun){
         /*...*/
         dfun->type_->accept(this);
         visitId(dfun->id_);
+
         dfun->liststm_->accept(this);
+
     }
 
 }
@@ -367,21 +384,43 @@ void TypeChecker::visitETyped(ETyped *etyped)
 
 void TypeChecker::visitType_bool(Type_bool *type_bool)
 {
-  /* Code For Type_bool Goes Here */
 
+            //debug
+    std::cout << "visitType_bool " << &(type_bool) << std::endl;
+  /* Code For Type_bool Goes Here */
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            this->env->currentType = type_bool;
+        }
+    }
 
 }
 
 void TypeChecker::visitType_int(Type_int *type_int)
 {
+
+            //debug
+    std::cout << "visitType_int " << &(type_int) << std::endl;
   /* Code For Type_int Goes Here */
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            this->env->currentType = type_int;
+        }
+    }
 
 
 }
 
 void TypeChecker::visitType_double(Type_double *type_double)
 {
+            //debug
+    std::cout << "visitType_double " << &(type_double) << std::endl;
   /* Code For Type_double Goes Here */
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            this->env->currentType = type_double;
+        }
+    }
 
 
 }
@@ -389,13 +428,27 @@ void TypeChecker::visitType_double(Type_double *type_double)
 void TypeChecker::visitType_void(Type_void *type_void)
 {
   /* Code For Type_void Goes Here */
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            this->env->currentType = type_void;
+        }
+    }
 
 
 }
 
 void TypeChecker::visitType_string(Type_string *type_string)
 {
+
+        //debug
+    std::cout << "visitType_string " << &(type_string) << std::endl;
+
   /* Code For Type_string Goes Here */
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            this->env->currentType = type_string;
+        }
+    }
 
 
 }
@@ -413,6 +466,8 @@ void TypeChecker::visitListArg(ListArg* listarg)
 {
   for (ListArg::iterator i = listarg->begin() ; i != listarg->end() ; ++i)
   {
+              //debug
+    std::cout << "visitListArg for loop " << std::endl;
     (*i)->accept(this);
   }
 }
@@ -445,8 +500,29 @@ void TypeChecker::visitListId(ListId* listid)
 void TypeChecker::visitId(Id x)
 {
   /* Code for Id Goes Here */
-  //if (this->passNo == 0)
-    //env->lookUpVar(x);
+    //debug
+    std::cout << "visitId " << x << std::endl;
+
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            //assume currentType != NULL
+            //test whether parameter ID has already been used
+            std::map<Id, Type*>::iterator it = this->env->visitingFunc->params.find(x);
+            if (it != this->env->visitingFunc->params.end()) {
+                std::cout << "TYPE ERROR\n\n" << "Parameter ID " << x << " has already been used." << std::endl;
+                exit(1);
+            }
+            //add parameter to map
+            this->env->visitingFunc->params.insert(std::pair<Id, Type*>(x, this->env->currentType));
+
+            //debug
+            std::cout << "@TypeChecker::visitId(Id x)  Added param " << x;
+            std::cout << " to function " << this->env->visitingFunc->id << std::endl;
+
+            this->env->currentType = NULL;
+        }
+    }
+
 }
 
 void TypeChecker::visitInteger(Integer x)

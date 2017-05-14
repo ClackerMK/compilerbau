@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     std::cout << "OK" << std::endl;
 
 
-    /*printf("\nParse Succesful!\n");
+    /*printf("\nParse Successful!\n");
     printf("\n[Abstract Syntax]\n");
     ShowAbsyn *s = new ShowAbsyn();
     printf("%s\n\n", s->show(parse_tree));
@@ -58,6 +58,7 @@ int main(int argc, char ** argv)
     printf("%s\n\n", p->print(parse_tree)); */
 
 
+    delete checker;
     return 0;
   }
   return 1;
