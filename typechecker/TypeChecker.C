@@ -33,8 +33,19 @@ TypeChecker::~TypeChecker() {
 
 void TypeChecker::typeCheck(Program* p) {
     p->accept(this);    //build a symbol table with all function and parameter types
+                  //debug
+    std::cout << "Round 2\n " << std::endl;
     this->passNo += 1;
     p->accept(this);    //type check and annotate the code by using this symbol table
+}
+
+std::string TypeChecker::getTypeName(Type *type) {
+    if (typeid(*type) == typeid(Type_int)) return "int";
+    if (typeid(*type) == typeid(Type_double)) return "double";
+    if (typeid(*type) == typeid(Type_string)) return "string";
+    if (typeid(*type) == typeid(Type_bool)) return "bool";
+    if (typeid(*type) == typeid(Type_void)) return "void";
+    return "unknown type";
 }
 
 void TypeChecker::visitProgram(Program* t) {} //abstract class
@@ -48,7 +59,7 @@ void TypeChecker::visitPDefs(PDefs *pdefs)
 {
 
             //debug
-    std::cout << "visitPDefs " << &(pdefs) << std::endl;
+    std::cout << "visitPDefs " << std::endl;
   /* Code For PDefs Goes Here */
     pdefs->listdef_->accept(this);
 
@@ -57,7 +68,7 @@ void TypeChecker::visitPDefs(PDefs *pdefs)
 void TypeChecker::visitDFun(DFun *dfun){
 
             //debug
-    std::cout << "visitDFun " << &(dfun) << std::endl;
+    std::cout << "visitDFun " << std::endl;
   /* Code For DFun Goes Here */
     if (this->passNo == 0) {
 
@@ -76,69 +87,145 @@ void TypeChecker::visitDFun(DFun *dfun){
         this->env->visitingFunc = funcId;
         dfun->listarg_->accept(this);
         this->env->visitingFunc = NULL;
-
-
-
     }
+
+
     if (this->passNo == 1) {
-        /*...*/
+        /*...
         dfun->type_->accept(this);
-        visitId(dfun->id_);
+        visitId(dfun->id_);*/
 
+        //remember function in which we descend
+        this->env->visitingFunc = this->env->funcTable[dfun->id_];
+        //save context before entering new block    !!!!unnecessary!!!! weil jeden function eigene var map hat
+        std::map<Id, Type*> oldVars = this->env->funcTable[dfun->id_]->vars;
+
+        //
         dfun->liststm_->accept(this);
+        //
 
+        //restore old context
+        this->env->funcTable[dfun->id_]->vars = oldVars;
+        //no longer in any function
+        this->env->visitingFunc = NULL;
     }
 
 }
 
 void TypeChecker::visitADecl(ADecl *adecl)
-{
+{ std::cout << "passNo: " << this->passNo << " visitADecl" << "\n" << std::endl;
   /* Code For ADecl Goes Here */
 
-  adecl->type_->accept(this);
-  visitId(adecl->id_);
+    if (this->passNo == 0) {
+        if (this->env->visitingFunc) {
+            //assume currentType != NULL
+            //test whether parameter ID has already been used
+            std::map<Id, Type*>::iterator it = this->env->visitingFunc->params.find(adecl->id_);
+            if (it != this->env->visitingFunc->params.end()) {
+                std::cout << "TYPE ERROR\n\n" << "Parameter ID " << adecl->id_ << " has already been used." << std::endl;
+                exit(1);
+            }
+            //add parameter to map
+            this->env->visitingFunc->params.insert(std::pair<Id, Type*>(adecl->id_, adecl->type_));
+
+            //debug
+            std::cout << "Added param " << adecl->id_;
+            std::cout << " to function " << this->env->visitingFunc->id << std::endl;
+
+            this->env->currentType = NULL;
+        }
+    }
+
+
+    /* muss nach visitSDecls, weil ADecls nur fuer params ist
+
+    if (this->passNo == 1) {
+        //test whether ID has already been used in parameter list
+        std::map<Id, Type*>::iterator paramsIt = this->env->visitingFunc->params.find(adecl->id_);
+        //debug
+        std::cout << this->env->visitingFunc->params.find(adecl->id_)->first << "<<<<<<K\n\n\n\n\nLKDFJ<<<<<<<<<<<";
+        if (paramsIt != this->env->visitingFunc->params.end()) {
+            std::cout << "TYPE ERROR\n\n" << "Variable ID " << adecl->id_ << " has already been used in parameter list." << std::endl;
+            exit(1);
+        }
+
+    } */
+    adecl->type_->accept(this);
+    visitId(adecl->id_);
 
 }
 
 void TypeChecker::visitSExp(SExp *sexp)
 {
   /* Code For SExp Goes Here */
-
+    this->env->declaring = true;//das brauchen wir glaube ich
   sexp->exp_->accept(this);
 
 }
 
 void TypeChecker::visitSDecls(SDecls *sdecls)
-{
+{              //debug
+    std::cout << "visitSDecls " << std::endl;
   /* Code For SDecls Goes Here */
+    if (this->passNo == 1) {
+        this->env->currentType = sdecls->type_;
+        this->env->declaring = true;
 
-  sdecls->type_->accept(this);
-  sdecls->listid_->accept(this);
+        //adds variable to variable map if not already declared or used in parameter list
+        sdecls->listid_->accept(this);
+
+        this->env->currentType = NULL;
+        this->env->declaring = false;
+
+    }
+
+    //sdecls->type_->accept(this);        //don't think we need this anymore
+
 
 }
 
 void TypeChecker::visitSInit(SInit *sinit)
 {
   /* Code For SInit Goes Here */
+    if (this->passNo == 1) {
+        this->env->declaring = true;
 
-  sinit->type_->accept(this);
-  visitId(sinit->id_);
-  sinit->exp_->accept(this);
+        //adds variable to variable map if not already declared or used in parameter list
+        this->env->currentType = sinit->type_;      //sinit->type_->accept(this); does the same (I think)
+        visitId(sinit->id_);
+
+        this->env->declaring = false;
+
+        sinit->exp_->accept(this);
+        this->env->currentType = NULL;
+    }
 
 }
 
 void TypeChecker::visitSReturn(SReturn *sreturn)
 {
   /* Code For SReturn Goes Here */
+    if (this->passNo == 1) {
 
-  sreturn->exp_->accept(this);
+    }
+
+
+    sreturn->exp_->accept(this);
 
 }
 
 void TypeChecker::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
   /* Code For SReturnVoid Goes Here */
-
+              //debug
+    std::cout << "visitSReturnVoid " << std::endl;
+    if (this->passNo == 1) {
+        if ( this->getTypeName(this->env->visitingFunc->funcType) !=  "void" ) {
+            std::cout << "TYPE ERROR\n\n" << "Function " << this->env->visitingFunc->id << " returns type void instead of type "
+                        << this->getTypeName(this->env->visitingFunc->funcType) << std::endl;
+            exit(1);
+        }
+    }
 
 }
 
@@ -210,8 +297,10 @@ void TypeChecker::visitEString(EString *estring)
 void TypeChecker::visitEId(EId *eid)
 {
   /* Code For EId Goes Here */
+    if (this->passNo == 1) {
+        visitId(eid->id_);
+    }
 
-  visitId(eid->id_);
 
 }
 
@@ -386,7 +475,7 @@ void TypeChecker::visitType_bool(Type_bool *type_bool)
 {
 
             //debug
-    std::cout << "visitType_bool " << &(type_bool) << std::endl;
+    std::cout << "visitType_bool " << std::endl;
   /* Code For Type_bool Goes Here */
     if (this->passNo == 0) {
         if (this->env->visitingFunc) {
@@ -400,7 +489,7 @@ void TypeChecker::visitType_int(Type_int *type_int)
 {
 
             //debug
-    std::cout << "visitType_int " << &(type_int) << std::endl;
+    std::cout << "visitType_int " << std::endl;
   /* Code For Type_int Goes Here */
     if (this->passNo == 0) {
         if (this->env->visitingFunc) {
@@ -414,7 +503,7 @@ void TypeChecker::visitType_int(Type_int *type_int)
 void TypeChecker::visitType_double(Type_double *type_double)
 {
             //debug
-    std::cout << "visitType_double " << &(type_double) << std::endl;
+    std::cout << "visitType_double " << std::endl;
   /* Code For Type_double Goes Here */
     if (this->passNo == 0) {
         if (this->env->visitingFunc) {
@@ -427,6 +516,8 @@ void TypeChecker::visitType_double(Type_double *type_double)
 
 void TypeChecker::visitType_void(Type_void *type_void)
 {
+                //debug
+    std::cout << "visitType_void " << std::endl;
   /* Code For Type_void Goes Here */
     if (this->passNo == 0) {
         if (this->env->visitingFunc) {
@@ -441,7 +532,7 @@ void TypeChecker::visitType_string(Type_string *type_string)
 {
 
         //debug
-    std::cout << "visitType_string " << &(type_string) << std::endl;
+    std::cout << "visitType_string " << std::endl;
 
   /* Code For Type_string Goes Here */
     if (this->passNo == 0) {
@@ -458,6 +549,8 @@ void TypeChecker::visitListDef(ListDef* listdef)
 {
   for (ListDef::iterator i = listdef->begin() ; i != listdef->end() ; ++i)
   {
+                    //debug
+    std::cout << "visitListDef for loop " << std::endl;
     (*i)->accept(this);
   }
 }
@@ -476,6 +569,8 @@ void TypeChecker::visitListStm(ListStm* liststm)
 {
   for (ListStm::iterator i = liststm->begin() ; i != liststm->end() ; ++i)
   {
+                    //debug
+    std::cout << "visitListStm for loop " << std::endl;
     (*i)->accept(this);
   }
 }
@@ -503,7 +598,43 @@ void TypeChecker::visitId(Id x)
     //debug
     std::cout << "visitId " << x << std::endl;
 
-    if (this->passNo == 0) {
+    if (this->passNo == 1) {
+        if (this->env->declaring) {
+
+            //test whether ID has already been used in parameter list
+            std::map<Id, Type*>::iterator paramsIt = this->env->visitingFunc->params.find(x);
+            if (paramsIt != this->env->visitingFunc->params.end()) {
+                std::cout << "TYPE ERROR\n\n" << "Variable ID " << x << " has already been used in parameter list." << std::endl;
+                exit(1);
+            }
+
+            //test whether ID has already been declared, i.e. is in vars map
+            std::map<Id, Type*>::iterator varsIt = this->env->visitingFunc->vars.find(x);
+            if (varsIt != this->env->visitingFunc->vars.end()) {
+                std::cout << "TYPE ERROR\n\n" << "Variable ID " << x << " has already been declared." << std::endl;
+                exit(1);
+            }
+
+            //add variable to vars map
+            this->env->visitingFunc->vars.insert(std::pair<Id, Type*>(x, this->env->currentType));
+            //debug
+            std::cout << "Added variable " << x;
+            std::cout << " to vars map in function " << this->env->visitingFunc->id << std::endl;
+        }
+
+
+        //test whether ID is in parameter list or in variable list (gets executed when a variable is used)
+        std::map<Id, Type*>::iterator paramsIt = this->env->visitingFunc->params.find(x);
+        std::map<Id, Type*>::iterator varsIt = this->env->visitingFunc->vars.find(x);
+        if ( (paramsIt == this->env->visitingFunc->params.end()) && varsIt == this->env->visitingFunc->vars.end() )  {
+            std::cout << "TYPE ERROR\n\n" << "Variable ID " << x << " has not been declared yet." << std::endl;
+            exit(1);
+        }
+
+
+    }
+
+    /*if (this->passNo == 0) {
         if (this->env->visitingFunc) {
             //assume currentType != NULL
             //test whether parameter ID has already been used
@@ -521,34 +652,45 @@ void TypeChecker::visitId(Id x)
 
             this->env->currentType = NULL;
         }
-    }
+    }*/
 
 }
 
 void TypeChecker::visitInteger(Integer x)
 {
   /* Code for Integer Goes Here */
+  //debug
+  std::cout << "visitInteger " << x << std::endl;
 }
 
 void TypeChecker::visitChar(Char x)
 {
   /* Code for Char Goes Here */
+    //debug
+  std::cout << "visitChar " << x << std::endl;
 }
 
 void TypeChecker::visitDouble(Double x)
 {
   /* Code for Double Goes Here */
+    //debug
+  std::cout << "visitDouble " << x << std::endl;
 }
 
 void TypeChecker::visitString(String x)
 {
   /* Code for String Goes Here */
+    //debug
+  std::cout << "visitString " << x << std::endl;
 }
 
 void TypeChecker::visitIdent(Ident x)
 {
   /* Code for Ident Goes Here */
+    //debug
+  std::cout << "visitIdent " << x << std::endl;
 }
 
 
 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               

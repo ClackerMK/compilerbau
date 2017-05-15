@@ -11,20 +11,6 @@
 #include "Printer.H"
 #include "Absyn.H"
 #include "TypeChecker.H"
-/*
-class Pup {
-public:
-    Pup() {
-        int i = 5;
-        std::cout << "kasdf" << std::endl;
-    }
-    ~Pup();
-    int i;
-    void func(int a) {
-        this->i = a;
-    }
-
-};*/
 
 int main(int argc, char ** argv)
 {
@@ -42,20 +28,18 @@ int main(int argc, char ** argv)
   /* The default entry point is used. For other options see Parser.H */
   Program *parse_tree = pProgram(input);
   if (parse_tree) {
-    //Pup *pupsen;
-    //pupsen->func(3);
     TypeChecker *checker = new TypeChecker();
     checker->typeCheck(parse_tree);
     std::cout << "OK" << std::endl;
 
 
-    /*printf("\nParse Successful!\n");
+    printf("\nParse Successful!\n");
     printf("\n[Abstract Syntax]\n");
     ShowAbsyn *s = new ShowAbsyn();
     printf("%s\n\n", s->show(parse_tree));
     printf("[Linearized Tree]\n");
     PrintAbsyn *p = new PrintAbsyn();
-    printf("%s\n\n", p->print(parse_tree)); */
+    printf("%s\n\n", p->print(parse_tree));
 
 
     delete checker;
