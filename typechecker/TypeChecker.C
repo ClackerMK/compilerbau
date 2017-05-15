@@ -34,7 +34,7 @@ TypeChecker::~TypeChecker() {
 void TypeChecker::typeCheck(Program* p) {
     p->accept(this);    //build a symbol table with all function and parameter types
                   //debug
-    std::cout << "Round 2\n " << std::endl;
+    std::cout << "\n### Round 2 ###\n " << std::endl;
     this->passNo += 1;
     p->accept(this);    //type check and annotate the code by using this symbol table
 }
@@ -197,6 +197,7 @@ void TypeChecker::visitSInit(SInit *sinit)
         this->env->declaring = false;
 
         sinit->exp_->accept(this);
+
         this->env->currentType = NULL;
     }
 
@@ -258,15 +259,32 @@ void TypeChecker::visitSIfElse(SIfElse *sifelse)
 
 void TypeChecker::visitETrue(ETrue *etrue)
 {
+                  //debug
+    std::cout << "visitETrue " << std::endl;
   /* Code For ETrue Goes Here */
-
+    if (this->passNo == 1) {
+        if (this->getTypeName(this->env->currentType) != "bool") {
+            std::cout << "TYPE ERROR\n\n" << "Variable expected type "
+                        << this->getTypeName(this->env->currentType) << " but found type bool" << std::endl;
+            exit(1);
+        }
+    }
 
 }
 
 void TypeChecker::visitEFalse(EFalse *efalse)
 {
-  /* Code For EFalse Goes Here */
 
+            //debug
+      std::cout << "visitETrue " << std::endl;
+  /* Code For EFalse Goes Here */
+    if (this->passNo == 1) {
+        if (this->getTypeName(this->env->currentType) != "bool") {
+            std::cout << "TYPE ERROR\n\n" << "Variable expected type "
+                        << this->getTypeName(this->env->currentType) << " but found type bool" << std::endl;
+            exit(1);
+        }
+    }
 
 }
 
@@ -438,9 +456,13 @@ void TypeChecker::visitENEq(ENEq *eneq)
 void TypeChecker::visitEAnd(EAnd *eand)
 {
   /* Code For EAnd Goes Here */
-
+//curtype saven und danach restoren
   eand->exp_1->accept(this);
+  //type von exp_1 saven
   eand->exp_2->accept(this);
+  //type von exp_2 saven
+  // type von exp_1 und exp_2 vergleichen
+  //curtype mit anfangs wert ueberschreiben
 
 }
 
@@ -618,7 +640,7 @@ void TypeChecker::visitId(Id x)
             //add variable to vars map
             this->env->visitingFunc->vars.insert(std::pair<Id, Type*>(x, this->env->currentType));
             //debug
-            std::cout << "Added variable " << x;
+            std::cout << "Added variable " << x << " of type " << this->getTypeName(this->env->currentType);
             std::cout << " to vars map in function " << this->env->visitingFunc->id << std::endl;
         }
 
@@ -661,6 +683,14 @@ void TypeChecker::visitInteger(Integer x)
   /* Code for Integer Goes Here */
   //debug
   std::cout << "visitInteger " << x << std::endl;
+
+    if (this->passNo == 1) {
+        if (this->getTypeName(this->env->currentType) != "int") {
+            std::cout << "TYPE ERROR\n\n" << "Variable expected type "
+                        << this->getTypeName(this->env->currentType) << " but found type integer" << std::endl;
+            exit(1);
+        }
+    }
 }
 
 void TypeChecker::visitChar(Char x)
@@ -675,6 +705,13 @@ void TypeChecker::visitDouble(Double x)
   /* Code for Double Goes Here */
     //debug
   std::cout << "visitDouble " << x << std::endl;
+    if (this->passNo == 1) {
+        if (this->getTypeName(this->env->currentType) != "double") {
+            std::cout << "TYPE ERROR\n\n" << "Variable expected type "
+                        << this->getTypeName(this->env->currentType) << " but found type double" << std::endl;
+            exit(1);
+        }
+    }
 }
 
 void TypeChecker::visitString(String x)
@@ -682,6 +719,13 @@ void TypeChecker::visitString(String x)
   /* Code for String Goes Here */
     //debug
   std::cout << "visitString " << x << std::endl;
+    if (this->passNo == 1) {
+        if (this->getTypeName(this->env->currentType) != "string") {
+            std::cout << "TYPE ERROR\n\n" << "Variable expected type "
+                        << this->getTypeName(this->env->currentType) << " but found type string" << std::endl;
+            exit(1);
+        }
+    }
 }
 
 void TypeChecker::visitIdent(Ident x)
@@ -693,4 +737,3 @@ void TypeChecker::visitIdent(Ident x)
 
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
