@@ -4,7 +4,6 @@
 
 #include "Absyn.H"
 
-
 class Skeleton : public Visitor
 {
 public:
@@ -61,12 +60,12 @@ public:
   void visitListExp(ListExp* p);
   void visitListId(ListId* p);
 
-  void visit"Id"("Id" x);
-  void visit"Integer"("Integer" x);
-  void visit"Char"("Char" x);
-  void visit"Double"("Double" x);
-  void visit"String"("String" x);
-  void visit"Ident"("Ident" x);
+  void visitId(Id x);
+  void visitInteger(Integer x);
+  void visitChar(Char x);
+  void visitDouble(Double x);
+  void visitString(String x);
+  void visitIdent(Ident x);
 
 };
 

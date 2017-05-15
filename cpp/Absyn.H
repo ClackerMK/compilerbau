@@ -18,6 +18,9 @@ typedef std::string Ident;
 typedef std::string Id;
 
 
+enum Types { INT, DOUBLE, BOOL, STRING, VOID };
+
+
 /********************   Forward Declarations    ********************/
 
 class Program;
@@ -192,7 +195,7 @@ class Type : public Visitable
 {
 public:
   virtual Type *clone() const = 0;
-
+    virtual Types getType() = 0;
 };
 
 
@@ -734,6 +737,10 @@ public:
   virtual void accept(Visitor *v);
   virtual Type_bool *clone() const;
   void swap(Type_bool &);
+
+    Types getType() {
+        return BOOL;
+    }
 };
 
 class Type_int : public Type
@@ -747,6 +754,10 @@ public:
   virtual void accept(Visitor *v);
   virtual Type_int *clone() const;
   void swap(Type_int &);
+
+    Types getType(){
+        return INT;
+    }
 };
 
 class Type_double : public Type
@@ -760,6 +771,10 @@ public:
   virtual void accept(Visitor *v);
   virtual Type_double *clone() const;
   void swap(Type_double &);
+
+    Types getType() {
+        return DOUBLE;
+    }
 };
 
 class Type_void : public Type
@@ -773,6 +788,10 @@ public:
   virtual void accept(Visitor *v);
   virtual Type_void *clone() const;
   void swap(Type_void &);
+
+    Types getType() {
+        return VOID;
+    }
 };
 
 class Type_string : public Type
@@ -786,6 +805,10 @@ public:
   virtual void accept(Visitor *v);
   virtual Type_string *clone() const;
   void swap(Type_string &);
+
+    Types getType(){
+        return STRING;
+    }
 };
 
 
