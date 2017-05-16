@@ -38,8 +38,17 @@ int main(int argc, char ** argv)
     printf("%s\n\n", p->print(parse_tree));
     return 0;
     */
-      TypeChecker checker;
-      parse_tree->accept(&checker);
+      try {
+          SymbolTableBuilder builder;
+          TypeChecker checker;
+          checker.setFunctionTable(builder.buildTable(parse_tree));
+          parse_tree->accept(&checker);
+      } catch (std::exception &e)
+      {
+          printf(e.what());
+          return 1;
+      }
+      printf("OK");
       return 0;
   }
   return 1;

@@ -19,6 +19,7 @@ typedef std::string Id;
 
 
 enum Types { INT, DOUBLE, BOOL, STRING, VOID };
+static const char * TypeStrings[] = {"Int", "Double" ,"Bool", "String", "Void"};
 
 
 /********************   Forward Declarations    ********************/
