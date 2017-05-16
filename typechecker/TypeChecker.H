@@ -22,8 +22,6 @@ public:
 };
 
 
-enum TypeCode {CInt, CDouble, CString, CBool, CVoid};
-
 class TypeChecker : public Visitor
 {
 
@@ -32,16 +30,11 @@ private:
     public:
         Env();
         ~Env();
-        //expands the environment by a function
-        Env *expand(Env *env, Id *funcId, FunctionInfo *func);
-        //expands the environment by a variable
-        Env *expand(Env *env, Id *id, Type *type);
-        void updateVar(Type *t, Id *id);
-        static Type* lookUpVar(Id *id);
         //function table, map function ID to corresponding FunctionInfo object
         std::map<Id, FunctionInfo*> funcTable;
         FunctionInfo *visitingFunc;
         Type *currentType;
+        bool declaring;     // if declaring == false => checking variable
     };
     Env *env;
 
@@ -53,6 +46,7 @@ public:
     //FunctionInfo *curFunc;
     void typeCheck(Program* p);
     int passNo;
+    std::string getTypeName(Type *type);
 
   void visitProgram(Program* p);
   void visitDef(Def* p);

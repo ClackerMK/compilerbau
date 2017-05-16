@@ -1,0 +1,3 @@
+/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir

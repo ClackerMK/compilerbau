@@ -1,0 +1,107 @@
+PDefs. Program ::= [Def];
+
+terminator Def "";
+
+comment "//";
+comment "/*" "*/";
+comment "#";
+
+DFun. Def ::= Inline Type Ident "(" [Arg] ")" "{" [Stm] "}";
+DecFun. Def ::= Inline Type Ident "(" [Arg] ")" ";";
+separator Arg ",";
+
+DTypeDef. Def ::= TypeDef;
+DStructDef. Def ::= StructDef;
+DUsing. Def ::= "using" [QCnst] ";";
+
+Arg. Arg ::= Type ArgId Default;
+
+Inline. Inline ::= "inline";
+NotInline. Inline ::= ;
+
+ArgIdNamed. ArgId ::= Ident;
+ArgIdNameless. ArgId ::=;
+
+Default. Default ::= "=" Value;
+NoDefault. Default ::=;
+
+ValInt. Value ::= Integer;
+ValDouble. Value ::= Double;
+ValChar. Value ::=  Char;
+ValString. Value ::= [ValString];
+
+ValSingleString. ValString ::= String;
+separator ValString "";
+
+TypeDef. TypeDef ::= "typedef" Type Ident ";";
+StructDef. StructDef ::= "struct" Ident "{" [Decl] "}" ";";
+
+StmDec. Stm ::= Decl ";";
+StmExp. Stm ::= Exp ";";
+StmRet. Stm ::= "return" Exp ";";
+StmWhile. Stm ::= "while" "(" Exp ")" Stm;
+StmDo. Stm ::= "do" Stm "while" "(" Exp ")" ";";
+StmFor. Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm;
+StmBlock. Stm ::= "{" [Stm] "}";
+StmIf. Stm ::= "if" "(" Exp ")" Stm;
+StmIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm;
+
+StmTypeDef. Stm ::= TypeDef;
+StmStructDef. Stm ::= StructDef;
+terminator Stm "";
+
+ExVal. 		Exp16 ::= Value;
+ExName. 	Exp16 ::= Ident;
+ExIndex. 	Exp15 ::= Exp "[" Exp "]";
+ExQualCnst. Exp15 ::= [QCnst];
+ExCall. 	Exp15 ::= Exp "(" [Exp] ")";
+ExProjPoint.Exp14 ::= Exp "." Exp;
+ExProjArrow.Exp14 ::= Exp "->" Exp; 
+ExPostInc. 	Exp14 ::= Exp "++";
+ExPostDec. 	Exp14 ::= Exp "--";
+ExDeref. 	Exp14 ::= "*" Exp;
+ExPreInc. 	Exp13 ::= "++" Exp;
+ExPreDec. 	Exp13 ::= "--" Exp;
+ExNot. 		Exp13 ::= "!" Exp;
+ExMult. 	Exp12 ::= Exp "*" Exp;
+ExDiv. 		Exp12 ::= Exp "/" Exp;
+ExMod. 		Exp12 ::= Exp "%" Exp;
+ExAdd. 		Exp11 ::= Exp "+" Exp;
+ExSub. 		Exp11 ::= Exp "-" Exp;
+ExLeftShft.	Exp10 ::= Exp "<<" Exp;
+ExRightSft.	Exp10 ::= Exp ">>" Exp;
+ExLess. 	Exp9 ::= Exp "<" Exp;
+ExGreater. 	Exp9 ::= Exp ">" Exp;
+ExLessEq. Exp9 ::= Exp "<=" Exp;
+ExGreaterEq. Exp9 ::= Exp ">=" Exp;
+ExEqual.	Exp8 ::= Exp "==" Exp;
+ExInequal.	Exp8 ::= Exp "!=" Exp;
+ExConjunc.	Exp4 ::= Exp "&&" Exp;
+ExDisjunc.	Exp3 ::= Exp "||" Exp;
+ExAssign.	Exp2 ::= Exp "=" Exp;
+ExAddAssign. Exp2 ::= Exp "+=" Exp;
+ExSubAssign. Exp2 ::= Exp "-=" Exp;
+ExCond.		Exp2 ::= Exp "?" Exp ":" Exp;
+ExThrow.	Exp1 ::= "throw" Exp;
+coercions Exp 16;
+separator Exp ",";
+
+TInt. 		Type ::= "int";
+TDouble. 	Type ::= "double";
+TBool. 		Type ::= "bool";
+TVoid. 		Type ::= "void";
+TQualCnst. 	Type ::= [QCnst];
+TReference. Type ::= Type "&";
+TConst.		Type ::= "const" Type;
+separator 	Type ",";
+
+QualCnst.   QCnst ::= Ident;
+QualCnstTemplate. QCnst ::= Ident "<" [Type] ">";
+separator QCnst "::";
+
+DecVar. Decl ::= Type [DeclName];
+terminator Decl ";";
+
+DeclName. DeclName ::= Ident Exp;
+DeclNameInitial. DeclName ::= Ident Exp "=" Exp;
+separator DeclName ",";
