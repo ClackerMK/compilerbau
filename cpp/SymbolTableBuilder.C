@@ -37,7 +37,7 @@ void SymbolTableBuilder::visitDFun(DFun *dfun)
         } else
         {
             // TBA Error Handling
-            throw std::runtime_error("SYNTAX ERROR: Multiple function declarations with the same name and arguments");
+            throw std::runtime_error("SYNTAX ERROR\n\n Multiple function declarations with the same name and arguments");
         }
     }
     else
