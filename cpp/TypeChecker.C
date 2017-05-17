@@ -536,22 +536,18 @@ void TypeChecker::visitEEq(EEq *eeq)
     auto lhs = typecheck(eeq->exp_1)[0];
     auto rhs = typecheck(eeq->exp_2)[0];
 
-    if (lhs == BOOL)
+    if (lhs == rhs)
     {
-        if (rhs == BOOL)
+        if (lhs == INT || lhs == DOUBLE || lhs == STRING || lhs == BOOL)
         {
             _type = {BOOL};
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR\n\n Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not check equality for type " + std::string(TypeStrings[rhs]));
     } else {
-        if (rhs != BOOL)
-        {
-            throw std::runtime_error("TYPE ERROR\n\n Both sides of greater than or equal comparision not bool, instead " +
-                                     std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
-        }
-        throw std::runtime_error("TYPE ERROR\n\n Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left and right hand side variable types do not match (" +
+                                 std::string(TypeStrings[lhs]) + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 
 }
@@ -563,22 +559,18 @@ void TypeChecker::visitENEq(ENEq *eneq)
     auto lhs = typecheck(eneq->exp_1)[0];
     auto rhs = typecheck(eneq->exp_2)[0];
 
-    if (lhs == BOOL)
+    if (lhs == rhs)
     {
-        if (rhs == BOOL)
+        if (lhs == INT || lhs == DOUBLE || lhs == STRING || lhs == BOOL)
         {
             _type = {BOOL};
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR\n\n Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not check inequality for type " + std::string(TypeStrings[rhs]));
     } else {
-        if (rhs != BOOL)
-        {
-            throw std::runtime_error("TYPE ERROR\n\n Both sides of greater than or equal comparision not bool, instead " +
-                                     std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
-        }
-        throw std::runtime_error("TYPE ERROR\n\n Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left and right hand side variable types do not match (" +
+                                 std::string(TypeStrings[lhs]) + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 
 }
@@ -651,6 +643,8 @@ void TypeChecker::visitEAss(EAss *eass)
             _type = {lhs};
             isVar = false;
         }
+    } else {
+    	throw std::runtime_error("TYPE ERROR\n\n Left hand side of assignment is not a variable");
     }
 }
 
