@@ -31,7 +31,7 @@ void SymbolTableBuilder::visitDFun(DFun *dfun)
     auto args     = getType(dfun->listarg_);
 
     if (table.count(dfun->id_) == 1 ) {
-        if (table[dfun->id_].count(args) == 1)
+        if (table[dfun->id_].count(args) == 0)
         {
             table[dfun->id_][args] = ret_type;
         } else
