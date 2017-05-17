@@ -7,6 +7,18 @@
 #include <algorithm>
 #include "TypeChecker.H"
 
+Types TypeChecker::lookupVariable(Id id) {
+        for (auto i = variableContext->cbegin(); i != variableContext->cend(); i++)
+        {
+            if (i->count(id) == 1)
+            {
+                return i->at(id);
+            }
+        }
+
+        throw std::runtime_error("SYNTAX ERROR\n\n Unknown variable " + id);
+}
+
 std::vector<Types> TypeChecker::typecheck(Visitable *v) {
     v->accept(this);
     return _type;
@@ -59,7 +71,7 @@ void TypeChecker::visitADecl(ADecl *adecl)
     else
     {
         // TBA Error Handling
-
+	throw std::runtime_error("TYPE ERROR\n\n Variable " + adecl->id_ + " has already been declared");
     }
 }
 
@@ -84,7 +96,7 @@ void TypeChecker::visitSDecls(SDecls *sdecls)
         else
         {
             // TBA Error Handling
-            throw std::runtime_error("TYPE ERROR: Multiple Variable Declarations in the same Block");
+            throw std::runtime_error("TYPE ERROR\n\n Multiple variable declarations in the same block");
         }
     }
 }
@@ -103,13 +115,13 @@ void TypeChecker::visitSInit(SInit *sinit)
         else
         {
             // TBA Error Handling
-            throw std::runtime_error("TYPE ERROR: Multiple Variable Declarations in the same Block");
+            throw std::runtime_error("TYPE ERROR\n\n Multiple variable declarations in the same block");
         }
     } else {
         // TBA Error Handling
 
-        throw std::runtime_error("TYPE ERROR: Wrong type @initialization: expected " + std::string(TypeStrings[varType]) +
-                                         " but got " + std::string(TypeStrings[ExprType[0]]));
+        throw std::runtime_error("TYPE ERROR\n\n Wrong type @initialization: expected " + std::string(TypeStrings[varType]) +
+                                         " but found " + std::string(TypeStrings[ExprType[0]]));
     }
 }
 
@@ -124,8 +136,8 @@ void TypeChecker::visitSReturn(SReturn *sreturn)
     else
     {
         // TBA Error Handling
-        throw std::runtime_error("TYPE ERROR: Wrong return type: expected " + std::string(TypeStrings[_currFunctionType]) +
-                                 " but got " + std::string(TypeStrings[ts[0]]));
+        throw std::runtime_error("TYPE ERROR\n\n Wrong return type: expected " + std::string(TypeStrings[_currFunctionType]) +
+                                 " but found " + std::string(TypeStrings[ts[0]]));
     }
 
 }
@@ -136,8 +148,8 @@ void TypeChecker::visitSReturnVoid(SReturnVoid *sreturnvoid)
     if (_currFunctionType != VOID)
     {
         // TBA Error Handling
-        throw std::runtime_error("TYPE ERROR: Wrong return type: expected " + std::string(TypeStrings[_currFunctionType]) +
-                                 " but got void");
+        throw std::runtime_error("TYPE ERROR\n\n Wrong return type: expected " + std::string(TypeStrings[_currFunctionType]) +
+                                 " but found void");
     }
 }
 
@@ -150,7 +162,7 @@ void TypeChecker::visitSWhile(SWhile *swhile)
 
     } else {
         // TBA Error Handling
-        throw std::runtime_error("TYPE ERROR: Wrong conditional type @while: expected bool but got " +
+        throw std::runtime_error("TYPE ERROR\n\n Wrong conditional type @while: expected bool but found " +
                                          std::string(TypeStrings[type[0]]));
     }
 
@@ -176,7 +188,7 @@ void TypeChecker::visitSIfElse(SIfElse *sifelse)
     {
 
     } else {
-        throw std::runtime_error("TYPE ERROR: Wrong conditional type @while: expected bool but got " +
+        throw std::runtime_error("TYPE ERROR\n\n Wrong conditional type @while: expected bool but found " +
                                  std::string(TypeStrings[type[0]]));
     }
 
@@ -258,11 +270,11 @@ void TypeChecker::visitEApp(EApp *eapp) {
                 }
             }
             args += ")";
-            throw std::runtime_error("SYNTAX ERROR: Unexpected function call: " + eapp->id_ + " with the arguments " + args + "  doesn't exist");
+            throw std::runtime_error("SYNTAX ERROR\n\n Unexpected function call: " + eapp->id_ + " with the arguments " + args + "  doesn't exist");
         }
     } else
     {
-        throw std::runtime_error("SYNTAX ERROR: Unexpected function call: " + eapp->id_ + " doesn't exist");
+        throw std::runtime_error("SYNTAX ERROR\n\n Unexpected function call: " + eapp->id_ + " does not exist");
     }
 }
 
@@ -279,11 +291,11 @@ void TypeChecker::visitEPIncr(EPIncr *epincr)
             isVar = false;
         } else
         {
-            throw std::runtime_error("TYPE ERROR: Can't increment " + std::string(TypeStrings[type]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not increment " + std::string(TypeStrings[type]));
         }
     } else
     {
-        throw std::runtime_error("TYPE ERROR: Can't increment non-variable");
+        throw std::runtime_error("TYPE ERROR\n\n Can not increment non-variable");
     }
 
 }
@@ -300,11 +312,11 @@ void TypeChecker::visitEPDecr(EPDecr *epdecr)
             isVar = false;
         } else
         {
-            throw std::runtime_error("TYPE ERROR: Can't decrement " + std::string(TypeStrings[type]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not decrement " + std::string(TypeStrings[type]));
         }
     } else
     {
-        throw std::runtime_error("TYPE ERROR: Can't increment non-variable");
+        throw std::runtime_error("TYPE ERROR\n\n Can not increment non-variable");
     }
 }
 
@@ -319,11 +331,11 @@ void TypeChecker::visitEIncr(EIncr *eincr)
             isVar = false;
         } else
         {
-            throw std::runtime_error("TYPE ERROR: Can't increment " + std::string(TypeStrings[type]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not increment " + std::string(TypeStrings[type]));
         }
     } else
     {
-        throw std::runtime_error("TYPE ERROR: Can't increment non-variable");
+        throw std::runtime_error("TYPE ERROR\n\n Can not increment non-variable");
     }
 }
 
@@ -339,11 +351,11 @@ void TypeChecker::visitEDecr(EDecr *edecr)
             isVar = false;
         } else
         {
-            throw std::runtime_error("TYPE ERROR: Can't decrement " + std::string(TypeStrings[type]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not decrement " + std::string(TypeStrings[type]));
         }
     } else
     {
-        throw std::runtime_error("TYPE ERROR: Can't increment non-variable");
+        throw std::runtime_error("TYPE ERROR\n\n Can not increment non-variable");
     }
 
 }
@@ -361,10 +373,10 @@ void TypeChecker::visitETimes(ETimes *etimes)
             _type = {lhs};
             isVar = false;
         } else {
-            throw std::runtime_error("TYPE ERROR: Can't apply multiplication to " + std::string(TypeStrings[lhs]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not apply multiplication to " + std::string(TypeStrings[lhs]));
         }
     } else {
-        throw std::runtime_error("TYPE ERROR: @multiplication left and right hand side variables don't match (" +
+        throw std::runtime_error("TYPE ERROR\n\n @multiplication left and right hand side variable types do not match (" +
                                     std::string(TypeStrings[lhs]) + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 }
@@ -382,10 +394,10 @@ void TypeChecker::visitEDiv(EDiv *ediv)
             _type = {lhs};
             isVar = false;
         } else {
-            throw std::runtime_error("TYPE ERROR: Can't apply division to " + std::string(TypeStrings[lhs]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not apply division to " + std::string(TypeStrings[lhs]));
         }
     } else {
-        throw std::runtime_error("TYPE ERROR: @division left and right hand side variables don't match (" +
+        throw std::runtime_error("TYPE ERROR\n\n @division left and right hand side variable types do not match (" +
                                  std::string(TypeStrings[lhs]) + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 
@@ -404,10 +416,10 @@ void TypeChecker::visitEPlus(EPlus *eplus)
             _type = {lhs};
             isVar = false;
         } else {
-            throw std::runtime_error("TYPE ERROR: Can't apply addition to " + std::string(TypeStrings[lhs]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not apply addition to " + std::string(TypeStrings[lhs]));
         }
     } else {
-        throw std::runtime_error("TYPE ERROR: @addition left and right hand side variables don't match (" + std::string(TypeStrings[lhs])  + std::string(TypeStrings[rhs]) + ")");
+        throw std::runtime_error("TYPE ERROR\n\n @addition left and right hand side variable types do not match (" + std::string(TypeStrings[lhs])  + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 }
 
@@ -424,10 +436,10 @@ void TypeChecker::visitEMinus(EMinus *eminus)
             _type = {lhs};
             isVar = false;
         } else {
-            throw std::runtime_error("TYPE ERROR: Can't apply subtraction to " + std::string(TypeStrings[lhs]));
+            throw std::runtime_error("TYPE ERROR\n\n Can not apply subtraction to " + std::string(TypeStrings[lhs]));
         }
     } else {
-        throw std::runtime_error("TYPE ERROR: @subtraction left and right hand side variables don't match (" +
+        throw std::runtime_error("TYPE ERROR\n\n @subtraction left and right hand side variable types do not match (" +
                                  std::string(TypeStrings[lhs]) + " & " + std::string(TypeStrings[rhs]) + ")");
     }
 }
@@ -446,9 +458,9 @@ void TypeChecker::visitELt(ELt *elt)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs]));
     } else {
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs])
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs])
                                  + " and " + std::string(TypeStrings[lhs])) ;
     }
 }
@@ -467,9 +479,9 @@ void TypeChecker::visitEGt(EGt *egt)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs]));
     } else {
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs])
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs])
                                  + " and " + std::string(TypeStrings[lhs])) ;
     }
 }
@@ -488,9 +500,9 @@ void TypeChecker::visitELtEq(ELtEq *elteq)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs]));
     } else {
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs])
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs])
                                  + " and " + std::string(TypeStrings[lhs])) ;
     }
 }
@@ -510,9 +522,9 @@ void TypeChecker::visitEGtEq(EGtEq *egteq)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs]));
     } else {
-        throw std::runtime_error("TYPE ERROR: Can't compare " + std::string(TypeStrings[lhs])
+        throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs])
                                  + " and " + std::string(TypeStrings[lhs])) ;
     }
 }
@@ -532,14 +544,14 @@ void TypeChecker::visitEEq(EEq *eeq)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
     } else {
         if (rhs != BOOL)
         {
-            throw std::runtime_error("TYPE ERROR: Both sides of greater than or equal comparision not bool, instead " +
+            throw std::runtime_error("TYPE ERROR\n\n Both sides of greater than or equal comparision not bool, instead " +
                                      std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
         }
-        throw std::runtime_error("TYPE ERROR: Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
     }
 
 }
@@ -559,14 +571,14 @@ void TypeChecker::visitENEq(ENEq *eneq)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Right hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[rhs]));
     } else {
         if (rhs != BOOL)
         {
-            throw std::runtime_error("TYPE ERROR: Both sides of greater than or equal comparision not bool, instead " +
+            throw std::runtime_error("TYPE ERROR\n\n Both sides of greater than or equal comparision not bool, instead " +
                                      std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
         }
-        throw std::runtime_error("TYPE ERROR: Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left hand side of greater than or equal comparision not bool, instead " + std::string(TypeStrings[lhs]));
     }
 
 }
@@ -586,14 +598,14 @@ void TypeChecker::visitEAnd(EAnd *eand)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Right hand side of conjunction not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Right hand side of conjunction not bool, instead " + std::string(TypeStrings[rhs]));
     } else {
         if (rhs != BOOL)
         {
-            throw std::runtime_error("TYPE ERROR: Both sides of conjunction not bool, instead " +
+            throw std::runtime_error("TYPE ERROR\n\n Both sides of conjunction not bool, instead " +
                                      std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
         }
-        throw std::runtime_error("TYPE ERROR: Left hand side of conjunction not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left hand side of conjunction not bool, instead " + std::string(TypeStrings[lhs]));
     }
 
 }
@@ -613,14 +625,14 @@ void TypeChecker::visitEOr(EOr *eor)
             isVar = false;
             return;
         }
-        throw std::runtime_error("TYPE ERROR: Right hand side of disjunction not bool, instead " + std::string(TypeStrings[rhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Right hand side of disjunction not bool, instead " + std::string(TypeStrings[rhs]));
     } else {
         if (rhs != BOOL)
         {
-            throw std::runtime_error("TYPE ERROR: Both sides of disjunction not bool, instead " +
+            throw std::runtime_error("TYPE ERROR\n\n Both sides of disjunction not bool, instead " +
                                      std::string(TypeStrings[lhs]) + ", " + std::string(TypeStrings[rhs]));
         }
-        throw std::runtime_error("TYPE ERROR: Left hand side of disjunction not bool, instead " + std::string(TypeStrings[lhs]));
+        throw std::runtime_error("TYPE ERROR\n\n Left hand side of disjunction not bool, instead " + std::string(TypeStrings[lhs]));
     }
 
 }

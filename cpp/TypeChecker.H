@@ -22,18 +22,7 @@ private:
     FunctionTable functionTable;
     std::vector<VariableTable> *variableContext;
 
-    Types lookupVariable(Id id)
-    {
-        for (auto i = variableContext->cbegin(); i != variableContext->cend(); i++)
-        {
-            if (i->count(id) == 1)
-            {
-                return i->at(id);
-            }
-        }
-
-        throw std::runtime_error("SYNTAX ERROR: Unknown variable " + id);
-    }
+    Types lookupVariable(Id id);
 
 public:
     void visitProgram(Program* p);
