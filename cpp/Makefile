@@ -1,5 +1,5 @@
 CC = g++
-CCFLAGS = -g -W -Wall
+CCFLAGS = -g -W -Wall -std=c++11
 
 FLEX = flex
 FLEX_OPTS = -PCPP
@@ -7,30 +7,19 @@ FLEX_OPTS = -PCPP
 BISON = bison
 BISON_OPTS = -t -pCPP
 
-OBJS = Absyn.o Lexer.o Parser.o Printer.o
-
-.PHONY: clean distclean
+OBJS = Absyn.o Lexer.o Parser.o Printer.o SymbolTableBuilder.o TypeChecker.o
 
 all: TestCPP
 
 clean:
 	rm -f *.o TestCPP CPP.aux CPP.log CPP.pdf CPP.dvi CPP.ps CPP
 
-distclean: clean
-	rm -f Absyn.C Absyn.H Test.C Parser.C Parser.H Lexer.C Skeleton.C Skeleton.H Printer.C Printer.H Makefile CPP.l CPP.y CPP.tex 
-
 TestCPP: ${OBJS} Test.o
 	@echo "Linking TestCPP..."
-	${CC} ${CCFLAGS} ${OBJS} Test.o -o TestCPP
+	${CC} ${CCFLAGS} ${OBJS} Test.o -o tccpp
 
 Absyn.o: Absyn.C Absyn.H
 	${CC} ${CCFLAGS} -c Absyn.C
-
-Lexer.C: CPP.l
-	${FLEX} -oLexer.C CPP.l
-
-Parser.C: CPP.y
-	${BISON} CPP.y -o Parser.C
 
 Lexer.o: Lexer.C Parser.H
 	${CC} ${CCFLAGS} -c Lexer.C
@@ -47,3 +36,8 @@ Skeleton.o: Skeleton.C Skeleton.H Absyn.H
 Test.o: Test.C Parser.H Printer.H Absyn.H
 	${CC} ${CCFLAGS} -c Test.C
 
+SymbolTableBuilder.o: SymbolTableBuilder.C SymbolTableBuilder.H
+	${CC} ${CCFLAGS} -c SymbolTableBuilder.C
+
+TypeChecker.o: TypeChecker.C TypeChecker.H
+	${CC} ${CCFLAGS} -c TypeChecker.C

@@ -5,6 +5,7 @@
 /*                                                                          */
 /****************************************************************************/
 #include <stdio.h>
+#include <iostream>
 #include "Parser.H"
 #include "Printer.H"
 #include "Absyn.H"
@@ -45,12 +46,13 @@ int main(int argc, char ** argv)
           parse_tree->accept(&checker);
       } catch (std::exception &e)
       {
-          printf(e.what());
+          std::cout << e.what() << std::endl;
           return 1;
       }
-      printf("OK");
+      std::cout << "OK" << std::endl;
       return 0;
   }
+    std::cout << "SYNTAX ERROR: Parse Unsuccessful" << std::endl;
   return 1;
 }
 
