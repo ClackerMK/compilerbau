@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ghost/Documents/projects/compilerbau/cpp/Absyn.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Absyn.C.o"
+  "/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/ConstantFolder.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/Lexer.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Lexer.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/Parser.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Parser.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/Printer.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Printer.C.o"

@@ -4,6 +4,10 @@
 CMakeFiles/testcpp.dir/Absyn.C.o: ../Absyn.C
 CMakeFiles/testcpp.dir/Absyn.C.o: ../Absyn.H
 
+CMakeFiles/testcpp.dir/ConstantFolder.C.o: ../Absyn.H
+CMakeFiles/testcpp.dir/ConstantFolder.C.o: ../ConstantFolder.C
+CMakeFiles/testcpp.dir/ConstantFolder.C.o: ../ConstantFolder.H
+
 CMakeFiles/testcpp.dir/Lexer.C.o: ../Lexer.C
 CMakeFiles/testcpp.dir/Lexer.C.o: ../Parser.H
 

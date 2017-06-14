@@ -150,6 +150,33 @@ Absyn.C.s:
 	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/Absyn.C.s
 .PHONY : Absyn.C.s
 
+ConstantFolder.o: ConstantFolder.C.o
+
+.PHONY : ConstantFolder.o
+
+# target to build an object file
+ConstantFolder.C.o:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/ConstantFolder.C.o
+.PHONY : ConstantFolder.C.o
+
+ConstantFolder.i: ConstantFolder.C.i
+
+.PHONY : ConstantFolder.i
+
+# target to preprocess a source file
+ConstantFolder.C.i:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/ConstantFolder.C.i
+.PHONY : ConstantFolder.C.i
+
+ConstantFolder.s: ConstantFolder.C.s
+
+.PHONY : ConstantFolder.s
+
+# target to generate assembly for a file
+ConstantFolder.C.s:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/ConstantFolder.C.s
+.PHONY : ConstantFolder.C.s
+
 Lexer.o: Lexer.C.o
 
 .PHONY : Lexer.o
@@ -324,6 +351,9 @@ help:
 	@echo "... Absyn.o"
 	@echo "... Absyn.i"
 	@echo "... Absyn.s"
+	@echo "... ConstantFolder.o"
+	@echo "... ConstantFolder.i"
+	@echo "... ConstantFolder.s"
 	@echo "... Lexer.o"
 	@echo "... Lexer.i"
 	@echo "... Lexer.s"

@@ -15,6 +15,8 @@ set(SOURCE_FILES
         TypeChecker.H
         SymbolTableBuilder.C
         SymbolTableBuilder.H
+        ConstantFolder.C
+        ConstantFolder.H
         Test.C)
 
 add_executable(testcpp ${SOURCE_FILES})

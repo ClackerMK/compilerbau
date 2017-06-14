@@ -90,6 +90,12 @@
 		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/Absyn.H">
 			<Option target="testcpp"/>
 		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.C">
+			<Option target="testcpp"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.H">
+			<Option target="testcpp"/>
+		</Unit>
 		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/Lexer.C">
 			<Option target="testcpp"/>
 		</Unit>

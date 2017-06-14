@@ -24,6 +24,16 @@ string
 vector
 -
 
+/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.C
+ConstantFolder.H
+/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.H
+
+/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.H
+Absyn.H
+/home/ghost/Documents/projects/compilerbau/cpp/Absyn.H
+memory
+-
+
 /home/ghost/Documents/projects/compilerbau/cpp/Lexer.C
 stdio.h
 -
@@ -108,6 +118,8 @@ Absyn.H
 
 /home/ghost/Documents/projects/compilerbau/cpp/Test.C
 stdio.h
+-
+iostream
 -
 Parser.H
 /home/ghost/Documents/projects/compilerbau/cpp/Parser.H
