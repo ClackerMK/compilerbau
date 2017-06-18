@@ -33,6 +33,10 @@ Absyn.H
 /home/ghost/Documents/projects/compilerbau/cpp/Absyn.H
 memory
 -
+stack
+-
+map
+-
 
 /home/ghost/Documents/projects/compilerbau/cpp/Lexer.C
 stdio.h
@@ -131,6 +135,8 @@ Skeleton.H
 /home/ghost/Documents/projects/compilerbau/cpp/Skeleton.H
 TypeChecker.H
 /home/ghost/Documents/projects/compilerbau/cpp/TypeChecker.H
+ConstantFolder.H
+/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.H
 
 /home/ghost/Documents/projects/compilerbau/cpp/TypeChecker.C
 algorithm

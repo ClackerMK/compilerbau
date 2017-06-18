@@ -11,6 +11,7 @@
 #include "Absyn.H"
 #include "Skeleton.H"
 #include "TypeChecker.H"
+#include "ConstantFolder.H"
 
 int main(int argc, char ** argv)
 {
@@ -42,8 +43,10 @@ int main(int argc, char ** argv)
       try {
           SymbolTableBuilder builder;
           TypeChecker checker;
+          ConstantFolder folder;
           checker.setFunctionTable(builder.buildTable(parse_tree));
           parse_tree->accept(&checker);
+          auto foldedTree = folder.fold(parse_tree);
       } catch (std::exception &e)
       {
           std::cout << e.what() << std::endl;

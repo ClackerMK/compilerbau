@@ -24,6 +24,7 @@ CMakeFiles/testcpp.dir/SymbolTableBuilder.C.o
  /home/ghost/Documents/projects/compilerbau/cpp/SymbolTableBuilder.H
 CMakeFiles/testcpp.dir/Test.C.o
  /home/ghost/Documents/projects/compilerbau/cpp/Absyn.H
+ /home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.H
  /home/ghost/Documents/projects/compilerbau/cpp/Parser.H
  /home/ghost/Documents/projects/compilerbau/cpp/Printer.H
  /home/ghost/Documents/projects/compilerbau/cpp/Skeleton.H

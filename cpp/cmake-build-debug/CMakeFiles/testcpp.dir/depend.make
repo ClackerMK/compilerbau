@@ -23,6 +23,7 @@ CMakeFiles/testcpp.dir/SymbolTableBuilder.C.o: ../SymbolTableBuilder.C
 CMakeFiles/testcpp.dir/SymbolTableBuilder.C.o: ../SymbolTableBuilder.H
 
 CMakeFiles/testcpp.dir/Test.C.o: ../Absyn.H
+CMakeFiles/testcpp.dir/Test.C.o: ../ConstantFolder.H
 CMakeFiles/testcpp.dir/Test.C.o: ../Parser.H
 CMakeFiles/testcpp.dir/Test.C.o: ../Printer.H
 CMakeFiles/testcpp.dir/Test.C.o: ../Skeleton.H

@@ -4,19 +4,61 @@
 
 #include "Absyn.H"
 #include <memory>
+#include <stack>
+#include <map>
 
 class ConstantFolder : public Visitor
 {
 private:
-    bool _constant;
     Visitable*  _tree;
 
-    void* _value;
-    Types  _type;
+    struct value {
+        Double Dbl;
+        Integer Int;
+        String Str;
+        bool Bl;
+    };
+    std::map<Id, std::pair<Types, value>> variables;
 
-    Types        getType(Visitable *v);
-    void*       getValue(Visitable *v);
-    bool        isConstant(Visitable *v);
+    std::unique_ptr<std::pair<Types, value>> lookup(Id id);
+    void removeVar();
+    void removeVar(Id id);
+    void setVar(Id id, Types type, ConstantFolder::value val);
+
+    Types       getType(Visitable *v);
+    Types       getType(ETrue *v);
+    Types       getType(EFalse *v);
+    Types       getType(EDouble *v);
+    Types       getType(EInt *v);
+    Types       getType(EString *v);
+
+    value       getValue(Visitable *v);
+    value       getValue(ETrue *v);
+    value       getValue(EFalse *v);
+    value       getValue(EDouble *v);
+    value       getValue(EInt *v);
+    value       getValue(EString *v);
+
+
+    bool        isConstant(Visitable *v) {
+        return false;
+    }
+    bool        isConstant(ETrue *v) {
+        return true;
+    }
+    bool        isConstant(EFalse *v) {
+        return true;
+    }
+    bool        isConstant(EDouble *v) {
+        return true;
+    }
+    bool        isConstant(EInt *v) {
+        return true;
+    }
+    bool        isConstant(EString *v) {
+        return true;
+    }
+
 public:
     Visitable*  fold(Visitable *v);
 
