@@ -482,7 +482,7 @@ void TypeChecker::visitEGt(EGt *egt)
         throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs]));
     } else {
         throw std::runtime_error("TYPE ERROR\n\n Can not compare " + std::string(TypeStrings[lhs])
-                                 + " and " + std::string(TypeStrings[lhs])) ;
+                                 + " and " + std::string(TypeStrings[rhs])) ;
     }
 }
 

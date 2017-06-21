@@ -161,6 +161,8 @@ stdio.h
 -
 iostream
 -
+llvm/Support/raw_ostream.h
+/home/ghost/Documents/projects/compilerbau/cpp/llvm/Support/raw_ostream.h
 Parser.H
 /home/ghost/Documents/projects/compilerbau/cpp/Parser.H
 Printer.H
@@ -963,6 +965,14 @@ llvm/Support/Compiler.h
 /usr/lib/llvm-3.5/include/llvm/Support/llvm/Support/Compiler.h
 stddef.h
 -
+
+/usr/lib/llvm-3.5/include/llvm/Support/raw_ostream.h
+llvm/ADT/StringRef.h
+/usr/lib/llvm-3.5/include/llvm/Support/llvm/ADT/StringRef.h
+llvm/Support/Compiler.h
+/usr/lib/llvm-3.5/include/llvm/Support/llvm/Support/Compiler.h
+llvm/Support/DataTypes.h
+/usr/lib/llvm-3.5/include/llvm/Support/llvm/Support/DataTypes.h
 
 /usr/lib/llvm-3.5/include/llvm/Support/type_traits.h
 type_traits

@@ -5,24 +5,34 @@
 
 int foo(double x, int y)
 {
-	return 10 + 9 ;
+	if (x > 1.0)
+		return y;
+	else
+		return 0;
 }
 
 int main()
 {
-	int i = 1 + 9;
-	double d = 0.9;
-	int a,b,c;
+	int i = 10;
+	double d = 5.0;
+	int c = 1;
+	bool t = true;
+	bool f = false;
 
-	if (i == 9)
-		return 5;
-	else
+	while (i > 1)
 	{
-		return i;
+		i--;
 	}
 
-	//foo(0.9,10);
+	/*bool b = t && f;
 
+	if (b)
+	{
+		return 1;
+	} else 
+	{
+		return 0;
+	}*/
 	return i;
 }
 

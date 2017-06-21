@@ -51,7 +51,7 @@ private:
 
 public:
     CodeGenerator();
-    std::unique_ptr<llvm::Module>& codegen(std::string name, Visitable* v);
+    std::unique_ptr<llvm::Module>&& codegen(std::string name, Visitable* v);
 
     void visitProgram(Program* p);
     void visitDef(Def* p);

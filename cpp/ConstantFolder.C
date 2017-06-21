@@ -521,7 +521,7 @@ void ConstantFolder::visitEGt(EGt *egt)
         }
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new EGt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -576,7 +576,7 @@ void ConstantFolder::visitELtEq(ELtEq *elteq)
         }
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new ELtEq(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -631,7 +631,7 @@ void ConstantFolder::visitEGtEq(EGtEq *egteq)
         }
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new EGtEq(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -686,7 +686,7 @@ void ConstantFolder::visitEEq(EEq *eeq)
         }
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new EEq(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -741,7 +741,7 @@ void ConstantFolder::visitENEq(ENEq *eneq)
         }
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new ENEq(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -772,7 +772,7 @@ void ConstantFolder::visitEAnd(EAnd *eand)
         _tree = new EFalse;
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new EAnd(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 }
 
@@ -803,7 +803,7 @@ void ConstantFolder::visitEOr(EOr *eor)
         _tree = new ETrue;
     } else
     {
-        _tree = new ELt(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
+        _tree = new EOr(dynamic_cast<Exp*>(_e1), dynamic_cast<Exp*>(_e2));
     }
 
 }

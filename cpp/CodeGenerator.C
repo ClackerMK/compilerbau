@@ -12,7 +12,7 @@ CodeGenerator::CodeGenerator() :
         _Builder(llvm::getGlobalContext()) {
 }
 
-std::unique_ptr<llvm::Module>& CodeGenerator::codegen(std::string name, Visitable* v)
+std::unique_ptr<llvm::Module>&& CodeGenerator::codegen(std::string name, Visitable* v)
 {
     _Module.reset(new llvm::Module(name, llvm::getGlobalContext()));
     _namedValues.clear();
@@ -20,7 +20,7 @@ std::unique_ptr<llvm::Module>& CodeGenerator::codegen(std::string name, Visitabl
 
     v->accept(this);
 
-    return _Module;
+    return std::move(_Module);
 }
 
 
@@ -109,15 +109,13 @@ void CodeGenerator::visitDFun(DFun *dfun)
         _namedValues.back()[args_n[Idx]] = new AllocPair(args_t[Idx], aInst);
     }
 
-    if (auto *RetVal = visit(dfun->liststm_)) {
-        // Validate the generated code, checking for consistency.
-        llvm::verifyFunction(*F);
-        _value = F;
-    } else {
-        // Error reading body, remove function.
-        F->eraseFromParent();
-        throw new std::runtime_error("Error reading body, remove function");
-    }
+    visit(dfun->liststm_);
+    _Builder.CreateUnreachable();
+    // Validate the generated code, checking for consistency.
+    llvm::verifyFunction(*F);
+    _value = F;
+
+
     _namedValues.pop_back();
 }
 
@@ -146,7 +144,7 @@ void CodeGenerator::visitSDecls(SDecls *sdecls)
     for (int i = 0; i < sdecls->listid_->size(); i++)
     {
         auto aloc = _Builder.CreateAlloca(getType(sdecls->type_), 0, (*sdecls->listid_)[i].c_str());
-
+        aloc->setName((*sdecls->listid_)[i].c_str());
         _namedValues.back()[(*sdecls->listid_)[i]] = new AllocPair(getType(sdecls->type_), aloc);
     }
 }
@@ -160,6 +158,7 @@ void CodeGenerator::visitSInit(SInit *sinit)
   sinit->exp_->accept(this);
 
     auto aloc = _Builder.CreateAlloca(getType(sinit->type_), 0, sinit->id_.c_str());
+    aloc->setName(sinit->id_.c_str());
 
     _namedValues.back()[sinit->id_] = new AllocPair(getType(sinit->type_), aloc);
 
@@ -169,7 +168,12 @@ void CodeGenerator::visitSInit(SInit *sinit)
 void CodeGenerator::visitSReturn(SReturn *sreturn)
 {
   /* Code For SReturn Goes Here */
-    _value = _Builder.CreateRet(visit(sreturn->exp_));
+    auto ret = visit(sreturn->exp_);
+    if (ret->getType()->isPointerTy())
+    {
+        ret = _Builder.CreateLoad(ret);
+    }
+    _value = _Builder.CreateRet(ret);
 }
 
 void CodeGenerator::visitSReturnVoid(SReturnVoid *sreturnvoid)
@@ -181,23 +185,34 @@ void CodeGenerator::visitSReturnVoid(SReturnVoid *sreturnvoid)
 void CodeGenerator::visitSWhile(SWhile *swhile)
 {
   /* Code For SWhile Goes Here */
+    _namedValues.push_back(AllocMap());
     auto cond = visit(swhile->exp_);
 
     auto F = _Builder.GetInsertBlock()->getParent();
 
-    auto ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", F);
-    auto ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
+    auto LoopBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "loop", F);
+    auto ContinueBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "continue");
 
-    swhile->stm_->accept(this);
-    // ToDo Implement While Loop
+    _Builder.CreateCondBr(cond, LoopBB, ContinueBB);
 
+    _Builder.SetInsertPoint(LoopBB);
+
+    visit(swhile->stm_);
+
+    cond = visit(swhile->exp_);
+    _Builder.CreateCondBr(cond, LoopBB, ContinueBB);
+
+    F->getBasicBlockList().push_back(ContinueBB);
+    _Builder.SetInsertPoint(ContinueBB);
+
+    _namedValues.pop_back();
 }
 
 void CodeGenerator::visitSBlock(SBlock *sblock)
 {
   /* Code For SBlock Goes Here */
     _namedValues.push_back(AllocMap());
-    sblock->liststm_->accept(this);
+    visit(sblock->liststm_);
     _namedValues.pop_back();
 }
 
@@ -205,7 +220,11 @@ void CodeGenerator::visitSIfElse(SIfElse *sifelse)
 {
   /* Code For SIfElse Goes Here */
     _namedValues.push_back(AllocMap());
-    auto cond = visit(sifelse);
+    auto cond = visit(sifelse->exp_);
+    if (cond->getType()->isPointerTy())
+    {
+        cond = _Builder.CreateLoad(cond);
+    }
 
     auto F = _Builder.GetInsertBlock()->getParent();
 
@@ -258,7 +277,7 @@ void CodeGenerator::visitEFalse(EFalse *efalse)
 void CodeGenerator::visitEInt(EInt *eint)
 {
   /* Code For EInt Goes Here */
-    _value = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(32, (uint64_t) eint->integer_));
+    _value = llvm::ConstantInt::getSigned(llvm::Type::getInt32Ty(llvm::getGlobalContext()), eint->integer_);
 }
 
 void CodeGenerator::visitEDouble(EDouble *edouble)
@@ -283,7 +302,7 @@ void CodeGenerator::visitEId(EId *eid)
     if (var == nullptr)
         throw (new std::runtime_error("Referencing unknown Variable Name"));
 
-    _value = _Builder.CreateLoad(var->second, eid->id_);
+    _value = var->second;
 }
 
 void CodeGenerator::visitEApp(EApp *eapp)
@@ -318,10 +337,14 @@ void CodeGenerator::visitEApp(EApp *eapp)
         throw (new std::runtime_error("Wrong # of arguments passed"));
     }
 
-    auto args_arr = visit(eapp->listexp_);
     auto args_vec = std::vector<llvm::Value*>();
     for (int i = 0; i < eapp->listexp_->size(); i++) {
-        args_vec.push_back(args_arr + i);
+        auto arg = visit((*eapp->listexp_)[i]);
+        if (arg->getType()->isPointerTy())
+        {
+            arg = _Builder.CreateLoad(arg, arg->getName());
+        }
+        args_vec.push_back(arg);
     }
 
     _value = _Builder.CreateCall(Function, llvm::makeArrayRef(args_vec), "call");
@@ -332,14 +355,15 @@ void CodeGenerator::visitEPIncr(EPIncr *epincr)
     /* Code For EPIncr Goes Here */
     auto v = visit(epincr->exp_);
 
-    auto alloc = lookup(v->getName());
-    if (alloc == nullptr)
-        throw (new std::runtime_error("Referencing unknown Variable Name"));
+    if (v->getType()->getTypeID() != llvm::Type::PointerTyID)
+    {
+        throw new std::invalid_argument("Referencing non Pointer");
+    }
 
-    auto v1 = _Builder.CreateLoad(alloc->second);
+    auto v1 = _Builder.CreateLoad(v, v->getName());
     llvm::Value* result;
 
-    switch (alloc->first->getTypeID())
+    switch (v1->getType()->getTypeID())
     {
         case llvm::Type::IntegerTyID:
             result = _Builder.CreateAdd(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
@@ -351,7 +375,7 @@ void CodeGenerator::visitEPIncr(EPIncr *epincr)
             throw (new std::invalid_argument("Unexpected Type"));
     }
 
-    _Builder.CreateStore(result, alloc->second);
+    _Builder.CreateStore(result, v);
 
     _value = v1;
 }
@@ -362,14 +386,15 @@ void CodeGenerator::visitEPDecr(EPDecr *epdecr)
 /* Code For EPIncr Goes Here */
     auto v = visit(epdecr->exp_);
 
-    auto alloc = lookup(v->getName());
-    if (alloc == nullptr)
-        throw (new std::runtime_error("Referencing unknown Variable Name"));
+    if (v->getType()->getTypeID() != llvm::Type::PointerTyID)
+    {
+        throw new std::invalid_argument("Referencing non Pointer");
+    }
 
-    auto v1 = _Builder.CreateLoad(alloc->second);
+    auto v1 = _Builder.CreateLoad(v, v->getName());
     llvm::Value* result;
 
-    switch (alloc->first->getTypeID())
+    switch (v1->getType()->getTypeID())
     {
         case llvm::Type::IntegerTyID:
             result = _Builder.CreateSub(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
@@ -381,7 +406,7 @@ void CodeGenerator::visitEPDecr(EPDecr *epdecr)
             throw (new std::invalid_argument("Unexpected Type"));
     }
 
-    _Builder.CreateStore(result, alloc->second);
+    _Builder.CreateStore(result, v);
 
     _value = v1;
 }
@@ -391,14 +416,15 @@ void CodeGenerator::visitEIncr(EIncr *eincr)
   /* Code For EIncr Goes Here */
     auto v = visit(eincr->exp_);
 
-    auto alloc = lookup(v->getName());
-    if (alloc == nullptr)
-        throw (new std::runtime_error("Referencing unknown Variable Name"));
+    if (v->getType()->getTypeID() != llvm::Type::PointerTyID)
+    {
+        throw new std::invalid_argument("Referencing non Pointer");
+    }
 
-    auto v1 = _Builder.CreateLoad(alloc->second);
+    auto v1 = _Builder.CreateLoad(v, v->getName());
     llvm::Value* result;
 
-    switch (alloc->first->getTypeID())
+    switch (v1->getType()->getTypeID())
     {
         case llvm::Type::IntegerTyID:
             result = _Builder.CreateAdd(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
@@ -410,7 +436,7 @@ void CodeGenerator::visitEIncr(EIncr *eincr)
             throw (new std::invalid_argument("Unexpected Type"));
     }
 
-    _Builder.CreateStore(result, alloc->second);
+    _Builder.CreateStore(result, v);
 
     _value = result;
 
@@ -421,14 +447,15 @@ void CodeGenerator::visitEDecr(EDecr *edecr)
   /* Code For EDecr Goes Here */
     auto v = visit(edecr->exp_);
 
-    auto alloc = lookup(v->getName());
-    if (alloc == nullptr)
-        throw (new std::runtime_error("Referencing unknown Variable Name"));
+    if (v->getType()->getTypeID() != llvm::Type::PointerTyID)
+    {
+        throw new std::invalid_argument("Referencing non Pointer");
+    }
 
-    auto v1 = _Builder.CreateLoad(alloc->second);
+    auto v1 = _Builder.CreateLoad(v, v->getName());
     llvm::Value* result;
 
-    switch (alloc->first->getTypeID())
+    switch (v1->getType()->getTypeID())
     {
         case llvm::Type::IntegerTyID:
             result = _Builder.CreateSub(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
@@ -440,7 +467,7 @@ void CodeGenerator::visitEDecr(EDecr *edecr)
             throw (new std::invalid_argument("Unexpected Type"));
     }
 
-    _Builder.CreateStore(result, alloc->second);
+    _Builder.CreateStore(result, v);
 
     _value = result;
 }
@@ -450,6 +477,13 @@ void CodeGenerator::visitETimes(ETimes *etimes)
     /* Code For ETimes Goes Here */
     auto op_l = visit(etimes->exp_1);
     auto op_r = visit(etimes->exp_2);
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
 
     switch (op_l->getType()->getTypeID())
     {
@@ -471,6 +505,13 @@ void CodeGenerator::visitEDiv(EDiv *ediv)
     auto op_l = visit(ediv->exp_1);
     auto op_r = visit(ediv->exp_2);
 
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
@@ -490,6 +531,15 @@ void CodeGenerator::visitEPlus(EPlus *eplus)
   /* Code For EPlus Goes Here */
     auto op_l = visit(eplus->exp_1);
     auto op_r = visit(eplus->exp_2);
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
 
     switch (op_l->getType()->getTypeID())
     {
@@ -512,6 +562,14 @@ void CodeGenerator::visitEMinus(EMinus *eminus)
     auto op_l = visit(eminus->exp_1);
     auto op_r = visit(eminus->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
@@ -533,14 +591,21 @@ void CodeGenerator::visitELt(ELt *elt)
     auto op_l = visit(elt->exp_1);
     auto op_r = visit(elt->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_SLT, op_l, op_r, "lt_f");
+            _value = _Builder.CreateFCmpOLT(op_l, op_r, "lt_f");
             break;
-
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_SLT, op_l, op_r, "lt_i");
+            _value = _Builder.CreateICmpSLT(op_l, op_r, "lt_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -555,14 +620,23 @@ void CodeGenerator::visitEGt(EGt *egt)
     auto op_l = visit(egt->exp_1);
     auto op_r = visit(egt->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_SGT, op_l, op_r, "gt_f");
+            _value = _Builder.CreateFCmpOGT(op_l, op_r, "gt_f");
             break;
 
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_SGT, op_l, op_r, "gt_i");
+            _value = _Builder.CreateICmpSGT(op_l, op_r, "gt_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -578,14 +652,23 @@ void CodeGenerator::visitELtEq(ELtEq *elteq)
     auto op_l = visit(elteq->exp_1);
     auto op_r = visit(elteq->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_SLE, op_l, op_r, "le_f");
+            _value = _Builder.CreateFCmpOGE(op_l, op_r, "le_f");
             break;
 
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_SLE, op_l, op_r, "le_i");
+            _value = _Builder.CreateICmpSLE(op_l, op_r, "le_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -599,14 +682,23 @@ void CodeGenerator::visitEGtEq(EGtEq *egteq)
     auto op_l = visit(egteq->exp_1);
     auto op_r = visit(egteq->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_SGE, op_l, op_r, "ge_f");
+            _value = _Builder.CreateFCmpOGE(op_l, op_r, "ge_f");
             break;
 
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_SGE, op_l, op_r, "ge_i");
+            _value = _Builder.CreateICmpSGE(op_l, op_r, "ge_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -620,14 +712,23 @@ void CodeGenerator::visitEEq(EEq *eeq)
     auto op_l = visit(eeq->exp_1);
     auto op_r = visit(eeq->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_EQ, op_l, op_r, "eq_f");
+            _value = _Builder.CreateFCmpOEQ(op_l, op_r, "eq_f");
             break;
 
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_EQ, op_l, op_r, "eq_i");
+            _value = _Builder.CreateICmpEQ(op_l, op_r, "eq_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -641,14 +742,23 @@ void CodeGenerator::visitENEq(ENEq *eneq)
     auto op_l = visit(eneq->exp_1);
     auto op_r = visit(eneq->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::DoubleTyID:
-            _value = _Builder.CreateFCmp(llvm::CmpInst::Predicate::ICMP_NE, op_l, op_r, "neq_f");
+            _value = _Builder.CreateFCmpONE(op_l, op_r, "neq_f");
             break;
 
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateICmp(llvm::CmpInst::Predicate::ICMP_NE, op_l, op_r, "neq_i");
+            _value = _Builder.CreateICmpNE(op_l, op_r, "neq_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -661,10 +771,19 @@ void CodeGenerator::visitEAnd(EAnd *eand)
     auto op_l = visit(eand->exp_1);
     auto op_r = visit(eand->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateAnd(op_l, op_r, "neq_i");
+            _value = _Builder.CreateAnd(op_l, op_r, "and");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -677,10 +796,19 @@ void CodeGenerator::visitEOr(EOr *eor)
     auto op_l = visit(eor->exp_1);
     auto op_r = visit(eor->exp_2);
 
+
+    if (op_l->getType()->isPointerTy()){
+        op_l = _Builder.CreateLoad(op_l, op_l->getName());
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateAnd(op_l, op_r, "neq_i");
+            _value = _Builder.CreateOr(op_l, op_r, "or");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -694,9 +822,15 @@ void CodeGenerator::visitEAss(EAss *eass)
     auto op_l = visit(eass->exp_1);
     auto op_r = visit(eass->exp_2);
 
-    auto val = _namedValues.back()[op_l->getName()];
 
-    _Builder.CreateStore(op_r, val->second);
+    if (!op_l->getType()->isPointerTy()){
+        throw new std::invalid_argument("Expected Variable");
+    }
+    if (op_r->getType()->isPointerTy()) {
+        op_r = _Builder.CreateLoad(op_r, op_r->getName());
+    }
+
+    _Builder.CreateStore(op_r, op_l);
 
     _value =  op_r;
     /*

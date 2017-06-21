@@ -6,6 +6,7 @@
 /****************************************************************************/
 #include <stdio.h>
 #include <iostream>
+#include "llvm/Support/raw_ostream.h"
 #include "Parser.H"
 #include "Printer.H"
 #include "Absyn.H"
@@ -42,6 +43,7 @@ int main(int argc, char ** argv)
     return 0;
     */
       try {
+
           SymbolTableBuilder builder;
           TypeChecker checker;
           ConstantFolder folder;
@@ -50,13 +52,16 @@ int main(int argc, char ** argv)
           parse_tree->accept(&checker);
           std::cout << std::endl;
           auto foldedTree = folder.fold(parse_tree);
-          generator.codegen("test", foldedTree)->dump();
+          std::string output;
+          llvm::raw_string_ostream output_stream(output);
+          std::unique_ptr<llvm::Module> module = generator.codegen("test", foldedTree);
+          module->print(output_stream, nullptr);
+          std::cout << output_stream.str();
       } catch (std::exception &e)
       {
           std::cout << e.what() << std::endl;
           return 1;
       }
-      std::cout << "OK" << std::endl;
       return 0;
   }
     std::cout << "SYNTAX ERROR: Parse Unsuccessful" << std::endl;
