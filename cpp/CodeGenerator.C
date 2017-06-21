@@ -64,10 +64,10 @@ void CodeGenerator::visitDFun(DFun *dfun)
         args_t.push_back(getType(decl->type_));
         args_n.push_back(decl->id_);
     }
-
+	
     auto *FT = llvm::FunctionType::get(getType(dfun->type_),
             llvm::makeArrayRef(args_t), false);
-
+			
     auto *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, dfun->id_, _Module.get());
 
     // If F conflicted, there was already something named 'Name'.  If it has a
@@ -664,7 +664,7 @@ void CodeGenerator::visitEAnd(EAnd *eand)
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateAnd(op_l, op_r, "neq_i");
+            _value = _Builder.CreateAnd(op_l, op_r, "and_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
@@ -680,7 +680,7 @@ void CodeGenerator::visitEOr(EOr *eor)
     switch (op_l->getType()->getTypeID())
     {
         case llvm::Type::TypeID::IntegerTyID:
-            _value = _Builder.CreateAnd(op_l, op_r, "neq_i");
+            _value = _Builder.CreateOr(op_l, op_r, "or_i");
             break;
         default:
             throw new std::runtime_error("Unexpected Type");
