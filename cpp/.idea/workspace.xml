@@ -38,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CodeGenerator.C" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CodeGenerator.C" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CodeGenerator.C">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="22" column="21" lean-forward="false" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
+            <state relative-caret-position="102">
+              <caret line="786" column="59" lean-forward="true" selection-start-line="786" selection-start-column="59" selection-end-line="786" selection-end-column="59" />
               <folding>
                 <element signature="e#304#323#0" expanded="true" />
               </folding>
@@ -60,11 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Test.C" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Test.C" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Test.C">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="64">
-              <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+            <state relative-caret-position="80">
+              <caret line="25" column="43" lean-forward="true" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
               <folding>
                 <element signature="e#474#492#0" expanded="true" />
               </folding>
@@ -472,12 +472,12 @@
       <workItem from="1497800992150" duration="2765000" />
       <workItem from="1497803799581" duration="6928000" />
       <workItem from="1497993655353" duration="29930000" />
-      <workItem from="1498071753675" duration="9747000" />
+      <workItem from="1498071753675" duration="9876000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97876000" />
+    <option name="totallyTimeSpent" value="98005000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1562" height="1018" extended-state="6" />
@@ -520,7 +520,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/CodeGenerator.C</url>
-          <line>794</line>
+          <line>798</line>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
       </breakpoints>
@@ -859,16 +859,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CodeGenerator.C">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="22" column="21" lean-forward="false" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
-          <folding>
-            <element signature="e#304#323#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Absyn.H">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="436">
@@ -889,10 +879,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Test.C">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+        <state relative-caret-position="80">
+          <caret line="25" column="43" lean-forward="true" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
           <folding>
             <element signature="e#474#492#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CodeGenerator.C">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="786" column="59" lean-forward="true" selection-start-line="786" selection-start-column="59" selection-end-line="786" selection-end-column="59" />
+          <folding>
+            <element signature="e#304#323#0" expanded="true" />
           </folding>
         </state>
       </provider>
