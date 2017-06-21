@@ -178,7 +178,7 @@ void ConstantFolder::visitSIfElse(SIfElse *sifelse)
     auto exp = fold(sifelse->exp_);
     if (isConstant(exp))
     {
-        if (getType(exp) == BOOL)
+        if (getType(exp) != BOOL)
         {
             throw new std::invalid_argument("Wrong Type @ If-Else");
         }

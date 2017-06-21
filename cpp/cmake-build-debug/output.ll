@@ -2,10 +2,10 @@
 
 define i32 @foo(double, i32) {
 entry:
-  %y = alloca double
+  %y = alloca i32
   %x = alloca double
   store double %0, double* %x
-  store i32 %1, double* %y
+  store i32 %1, i32* %y
   ret i32 19
 }
 
