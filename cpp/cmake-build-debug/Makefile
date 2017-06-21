@@ -150,6 +150,33 @@ Absyn.C.s:
 	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/Absyn.C.s
 .PHONY : Absyn.C.s
 
+CodeGenerator.o: CodeGenerator.C.o
+
+.PHONY : CodeGenerator.o
+
+# target to build an object file
+CodeGenerator.C.o:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/CodeGenerator.C.o
+.PHONY : CodeGenerator.C.o
+
+CodeGenerator.i: CodeGenerator.C.i
+
+.PHONY : CodeGenerator.i
+
+# target to preprocess a source file
+CodeGenerator.C.i:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/CodeGenerator.C.i
+.PHONY : CodeGenerator.C.i
+
+CodeGenerator.s: CodeGenerator.C.s
+
+.PHONY : CodeGenerator.s
+
+# target to generate assembly for a file
+CodeGenerator.C.s:
+	$(MAKE) -f CMakeFiles/testcpp.dir/build.make CMakeFiles/testcpp.dir/CodeGenerator.C.s
+.PHONY : CodeGenerator.C.s
+
 ConstantFolder.o: ConstantFolder.C.o
 
 .PHONY : ConstantFolder.o
@@ -351,6 +378,9 @@ help:
 	@echo "... Absyn.o"
 	@echo "... Absyn.i"
 	@echo "... Absyn.s"
+	@echo "... CodeGenerator.o"
+	@echo "... CodeGenerator.i"
+	@echo "... CodeGenerator.s"
 	@echo "... ConstantFolder.o"
 	@echo "... ConstantFolder.i"
 	@echo "... ConstantFolder.s"

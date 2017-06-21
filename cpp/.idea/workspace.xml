@@ -21,32 +21,31 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="testcpp" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ConstantFolder.H" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ConstantFolder.H">
+      <file leaf-file-name="CodeGenerator.C" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CodeGenerator.C">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+            <state relative-caret-position="5959">
+              <caret line="629" column="19" lean-forward="true" selection-start-line="629" selection-start-column="19" selection-end-line="629" selection-end-column="19" />
               <folding>
-                <element signature="e#108#126#0" expanded="true" />
-                <element signature="e#1031#1097#0" expanded="false" />
-                <element signature="e#1102#1163#0" expanded="false" />
-                <element signature="e#1168#1230#0" expanded="false" />
-                <element signature="e#1235#1298#0" expanded="false" />
-                <element signature="e#1303#1363#0" expanded="false" />
-                <element signature="e#1368#1431#0" expanded="false" />
+                <element signature="e#304#323#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ConstantFolder.C" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ConstantFolder.C">
+      <file leaf-file-name="CodeGenerator.H" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CodeGenerator.H">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="175" column="16" lean-forward="false" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
-              <folding />
+            <state relative-caret-position="48">
+              <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+              <folding>
+                <element signature="e#105#122#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -54,8 +53,8 @@
       <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="18" column="24" lean-forward="false" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+            <state relative-caret-position="464">
+              <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -71,59 +70,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Parser.H" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Parser.H">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="25" column="18" lean-forward="false" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Printer.H" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Printer.H">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="157" column="24" lean-forward="false" selection-start-line="157" selection-start-column="20" selection-end-line="157" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TypeChecker.H" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TypeChecker.H">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="63" column="26" lean-forward="true" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
-              <folding>
-                <element signature="e#102#118#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TypeChecker.C" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TypeChecker.C">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="460">
-              <caret line="503" column="12" lean-forward="false" selection-start-line="503" selection-start-column="12" selection-end-line="503" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Absyn.H" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Absyn.H">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="21" column="3" lean-forward="true" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Test.C" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Test.C" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Test.C">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="592">
@@ -135,40 +82,50 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Absyn.H" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Absyn.H">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-697">
+              <caret line="81" column="13" lean-forward="false" selection-start-line="81" selection-start-column="6" selection-end-line="81" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>arg</find>
-      <find>list</find>
-      <find>listar</find>
-      <find>ad</find>
-      <find>dfun</find>
-      <find>SIn</find>
-      <find>Skeleton</find>
-      <find>Program</find>
-      <find>SExp</find>
-      <find>Exp</find>
-      <find>VisitExp</find>
-      <find>constant</find>
-      <find>_constant</find>
-      <find>.get()</find>
-      <find>Integer</find>
+      <find>ETrue</find>
+      <find>EFAlse</find>
+      <find>efalse</find>
+      <find>EId</find>
+      <find>add</find>
+      <find>boo</find>
+      <find>_Builder</find>
+      <find>visitA</find>
+      <find>visitEApp</find>
+      <find>Eapp</find>
+      <find>visitType</find>
+      <find>visittype</find>
+      <find>getType</find>
+      <find>Arg</find>
+      <find>type_</find>
+      <find>Edecl</find>
+      <find>declt</find>
+      <find>Adecl</find>
+      <find>ADecl</find>
+      <find>listarg</find>
+      <find>ListStm</find>
+      <find>Def</find>
+      <find>S</find>
       <find>if</find>
-      <find>tree</find>
-      <find>_tree</find>
-      <find>_constant = ((true)|(false));\n</find>
-      <find>Eq</find>
-      <find>eass</find>
-      <find>ListDef</find>
-      <find>// To</find>
+      <find>llvm</find>
+      <find>llvm:</find>
       <find>IfElse</find>
-      <find>// T</find>
-      <find>look</find>
-      <find>TODO</find>
-      <find>DFun</find>
-      <find>If</find>
-      <find>SBlock</find>
+      <find>listid</find>
+      <find>visitEId</find>
+      <find>EAss</find>
     </findStrings>
     <replaceStrings>
       <replace>SymbolTableVisitor</replace>
@@ -176,6 +133,10 @@
       <replace>SymbolTableBuilder</replace>
       <replace>back()</replace>
       <replace>ConstantFolder</replace>
+      <replace>&lt;</replace>
+      <replace>llvm::Value*</replace>
+      <replace>llvm::Value* CodeGenerator::</replace>
+      <replace>_value = _Builder</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -196,10 +157,12 @@
         <option value="$PROJECT_DIR$/TypeChecker.H" />
         <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/TypeChecker.C" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/ConstantFolder.H" />
         <option value="$PROJECT_DIR$/ConstantFolder.C" />
         <option value="$PROJECT_DIR$/Test.C" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/CodeGenerator.H" />
+        <option value="$PROJECT_DIR$/CodeGenerator.C" />
       </list>
     </option>
   </component>
@@ -483,29 +446,30 @@
       <workItem from="1497445496400" duration="11155000" />
       <workItem from="1497800992150" duration="2765000" />
       <workItem from="1497803799581" duration="6928000" />
+      <workItem from="1497993655353" duration="19402000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58199000" />
+    <option name="totallyTimeSpent" value="77601000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1562" height="1018" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22371794" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1948718" sideWeight="0.49434572" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28850326" sideWeight="0.49780703" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286334" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3286334" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28923357" sideWeight="0.502193" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3286334" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286334" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1948718" sideWeight="0.5056543" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29609543" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28850326" sideWeight="0.49780703" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -542,23 +506,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="15" column="28" lean-forward="false" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TypeChecker.H">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="24" column="31" lean-forward="true" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding>
-            <element signature="e#102#118#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Absyn.H">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -824,28 +771,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Parser.H">
+    <entry file="file://$PROJECT_DIR$/Test.C">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="25" column="18" lean-forward="false" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Printer.H">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="157" column="24" lean-forward="false" selection-start-line="157" selection-start-column="20" selection-end-line="157" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TypeChecker.H">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="63" column="26" lean-forward="true" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
+        <state relative-caret-position="592">
+          <caret line="48" column="52" lean-forward="false" selection-start-line="48" selection-start-column="52" selection-end-line="48" selection-end-column="52" />
           <folding>
-            <element signature="e#102#118#0" expanded="true" />
+            <element signature="e#474#492#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -858,28 +789,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/TypeChecker.H">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="18" column="24" lean-forward="false" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+        <state relative-caret-position="256">
+          <caret line="63" column="26" lean-forward="false" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
+          <folding>
+            <element signature="e#102#118#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Printer.H">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="157" column="24" lean-forward="false" selection-start-line="157" selection-start-column="20" selection-end-line="157" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Absyn.H">
+    <entry file="file://$PROJECT_DIR$/Parser.H">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="21" column="3" lean-forward="true" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
+        <state relative-caret-position="400">
+          <caret line="25" column="18" lean-forward="false" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Absyn.C">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="598">
+          <caret line="605" column="11" lean-forward="false" selection-start-line="605" selection-start-column="11" selection-end-line="605" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ConstantFolder.H">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+        <state relative-caret-position="112">
+          <caret line="18" column="16" lean-forward="false" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
           <folding>
-            <element signature="e#108#126#0" expanded="true" />
+            <element signature="e#108#126#0" expanded="false" />
             <element signature="e#1031#1097#0" expanded="false" />
             <element signature="e#1102#1163#0" expanded="false" />
             <element signature="e#1168#1230#0" expanded="false" />
@@ -898,20 +855,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Absyn.C">
+    <entry file="file://$PROJECT_DIR$/Absyn.H">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="605" column="11" lean-forward="false" selection-start-line="605" selection-start-column="11" selection-end-line="605" selection-end-column="11" />
+        <state relative-caret-position="-697">
+          <caret line="81" column="13" lean-forward="false" selection-start-line="81" selection-start-column="6" selection-end-line="81" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Test.C">
+    <entry file="file://$PROJECT_DIR$/CodeGenerator.H">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="48" column="52" lean-forward="false" selection-start-line="48" selection-start-column="52" selection-end-line="48" selection-end-column="52" />
+        <state relative-caret-position="48">
+          <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
           <folding>
-            <element signature="e#474#492#0" expanded="true" />
+            <element signature="e#105#122#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CodeGenerator.C">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5959">
+          <caret line="629" column="19" lean-forward="true" selection-start-line="629" selection-start-column="19" selection-end-line="629" selection-end-column="19" />
+          <folding>
+            <element signature="e#304#323#0" expanded="true" />
           </folding>
         </state>
       </provider>

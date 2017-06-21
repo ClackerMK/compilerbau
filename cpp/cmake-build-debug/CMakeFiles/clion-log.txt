@@ -1,4 +1,6 @@
 /home/ghost/Downloads/clion-2017.1.1/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/ghost/Documents/projects/compilerbau/cpp
+-- Found LLVM 3.5.2
+-- Using LLVMConfig.cmake in: /usr/share/llvm-3.5/cmake
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug

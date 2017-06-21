@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ghost/Documents/projects/compilerbau/cpp/Absyn.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Absyn.C.o"
+  "/home/ghost/Documents/projects/compilerbau/cpp/CodeGenerator.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/CodeGenerator.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/ConstantFolder.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/Lexer.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Lexer.C.o"
   "/home/ghost/Documents/projects/compilerbau/cpp/Parser.C" "/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug/CMakeFiles/testcpp.dir/Parser.C.o"
@@ -15,8 +16,15 @@ set(CMAKE_DEPENDS_CHECK_CXX
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "__STDC_CONSTANT_MACROS"
+  "__STDC_LIMIT_MACROS"
+  )
+
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/lib/llvm-3.5/include"
   )
 
 # Targets to which this target links.

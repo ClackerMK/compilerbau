@@ -5,7 +5,7 @@
 		<Option title="testcpp"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\usr\share\;CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\;CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\cmake\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/ghost/Documents/projects/compilerbau/cpp/cmake-build-debug"/>
@@ -44,6 +44,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-D__STDC_LIMIT_MACROS"/>
+					<Add option="-D__STDC_CONSTANT_MACROS"/>
+					<Add directory="/usr/lib/llvm-3.5/include"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -67,6 +70,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-D__STDC_LIMIT_MACROS"/>
+					<Add option="-D__STDC_CONSTANT_MACROS"/>
+					<Add directory="/usr/lib/llvm-3.5/include"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -88,6 +94,12 @@
 			<Option target="testcpp"/>
 		</Unit>
 		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/Absyn.H">
+			<Option target="testcpp"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/CodeGenerator.C">
+			<Option target="testcpp"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/CodeGenerator.H">
 			<Option target="testcpp"/>
 		</Unit>
 		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/ConstantFolder.C">
@@ -128,6 +140,18 @@
 		</Unit>
 		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/../../../../../../usr/share/llvm-3.5/cmake/LLVMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\cmake\"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/../../../../../../usr/share/llvm-3.5/cmake/LLVMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\cmake\"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/../../../../../../usr/share/llvm-3.5/cmake/LLVMExports.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\cmake\"/>
+		</Unit>
+		<Unit filename="/home/ghost/Documents/projects/compilerbau/cpp/../../../../../../usr/share/llvm-3.5/cmake/LLVM-Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\share\llvm-3.5\cmake\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

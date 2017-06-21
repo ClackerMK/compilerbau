@@ -6,6 +6,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/testcpp.dir/TypeChecker.C.o"
   "CMakeFiles/testcpp.dir/SymbolTableBuilder.C.o"
   "CMakeFiles/testcpp.dir/ConstantFolder.C.o"
+  "CMakeFiles/testcpp.dir/CodeGenerator.C.o"
   "CMakeFiles/testcpp.dir/Test.C.o"
   "testcpp.pdb"
   "testcpp"

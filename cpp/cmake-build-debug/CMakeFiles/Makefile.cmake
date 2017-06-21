@@ -29,6 +29,10 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/ghost/Downloads/clion-2017.1.1/bin/cmake/share/cmake-3.7/Modules/Platform/Linux.cmake"
   "/home/ghost/Downloads/clion-2017.1.1/bin/cmake/share/cmake-3.7/Modules/Platform/UnixPaths.cmake"
   "/home/ghost/Downloads/clion-2017.1.1/bin/cmake/share/cmake-3.7/Modules/ProcessorCount.cmake"
+  "/usr/share/llvm-3.5/cmake/LLVM-Config.cmake"
+  "/usr/share/llvm-3.5/cmake/LLVMConfig.cmake"
+  "/usr/share/llvm-3.5/cmake/LLVMConfigVersion.cmake"
+  "/usr/share/llvm-3.5/cmake/LLVMExports.cmake"
   )
 
 # The corresponding makefile is:

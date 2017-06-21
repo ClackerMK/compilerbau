@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS = -g   -std=gnu++11
 
-CXX_DEFINES = 
+CXX_DEFINES = -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/usr/lib/llvm-3.5/include 
 
