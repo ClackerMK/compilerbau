@@ -25,25 +25,33 @@ private:
 
     llvm::Value* visit(Visitable* v);
 
+    AllocPair* lookup(Id name) {
+        for (auto i = _namedValues.rbegin(); i != _namedValues.rend(); i++)
+        {
+            if (i->count(name))
+            {
+                return i->at(name);
+            }
+        }
+        return nullptr;
+    }
+
+
     llvm::Type* getType(Type* t);
-    llvm::Type* getType(Type_bool* t);
-    llvm::Type* getType(Type_int* t);
-    llvm::Type* getType(Type_double* t);
-    llvm::Type* getType(Type_string* t);
-    llvm::Type* getType(Type_void* t);
+
 
     llvm::AllocaInst *CreateEntryBlockAlloca(llvm::Function *Function,
                                              llvm::Type* Type,
                                               const std::string &Name) {
         llvm::IRBuilder<> TmpB(&Function->getEntryBlock(),
                          Function->getEntryBlock().begin());
-        return TmpB.CreateAlloca(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 0,
+        return TmpB.CreateAlloca(Type, 0,
                                  Name.c_str());
     }
 
 public:
     CodeGenerator();
-    std::unique_ptr<llvm::Module> codegen(std::string name, Program* v);
+    std::unique_ptr<llvm::Module>& codegen(std::string name, Visitable* v);
 
     void visitProgram(Program* p);
     void visitDef(Def* p);

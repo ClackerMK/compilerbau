@@ -12,65 +12,58 @@ Visitable* ConstantFolder::fold(Visitable *v) {
 }
 
 Types ConstantFolder::getType(Visitable *v) {
-    throw new std::invalid_argument("Non-constant visitable");
-
-}
-
-
-Types ConstantFolder::getType(ETrue *v) {
-    return Types::BOOL;
-}
-
-Types ConstantFolder::getType(EFalse *v) {
-    return Types::BOOL;
-}
-
-Types ConstantFolder::getType(EDouble *v) {
-    return Types::DOUBLE;
-}
-
-Types ConstantFolder::getType(EInt *v) {
-    return Types::INT;
-}
-
-Types ConstantFolder::getType(EString *v) {
-    return Types::STRING;
+    // Es tut mir leid
+    EId* var;
+    if (dynamic_cast<ETrue*>(v) != nullptr || dynamic_cast<EFalse*>(v) != nullptr)
+    {
+        return Types::BOOL;
+    } else if (dynamic_cast<EInt*>(v) != nullptr)
+    {
+        return Types::INT;
+    } else if (dynamic_cast<EDouble*>(v) != nullptr)
+    {
+        return Types::DOUBLE;
+    } else if (dynamic_cast<EString*>(v) != nullptr)
+    {
+        return Types::STRING;
+    } else if ((var = dynamic_cast<EId*>(v)) != nullptr)
+    {
+        return variables[var->id_].first;
+    }
+    else {
+        throw new std::invalid_argument("Expected Constant or ID");
+    }
 }
 
 
 ConstantFolder::value ConstantFolder::getValue(Visitable *v) {
-    throw new std::invalid_argument("Non-constant visitable");
-}
-
-
-ConstantFolder::value ConstantFolder::getValue(ETrue *v) {
-    ConstantFolder::value result;
-    result.Bl = true;
-    return result;
-}
-
-ConstantFolder::value ConstantFolder::getValue(EFalse *v) {
-    ConstantFolder::value result;
-    result.Bl = false;
-    return result;
-}
-
-ConstantFolder::value ConstantFolder::getValue(EDouble *v) {
-    ConstantFolder::value result;
-    result.Dbl = v->double_;
-    return result;
-}
-
-ConstantFolder::value ConstantFolder::getValue(EInt *v) {
-    ConstantFolder::value result;
-    result.Int = v->integer_;
-    return result;
-}
-
-ConstantFolder::value ConstantFolder::getValue(EString *v) {
-    ConstantFolder::value result;
-    result.Str = v->string_;
-    return result;
+    ConstantFolder::value val;
+    EInt* _int;
+    EDouble* _double;
+    EString* _string;
+    EId* _id;
+    if (dynamic_cast<ETrue*>(v) != nullptr) {
+        val.Bl = true;
+    }else if (dynamic_cast<EFalse*>(v) != nullptr)
+    {
+        val.Bl = false;
+    } else if ((_int = dynamic_cast<EInt*>(v)) != nullptr)
+    {
+        val.Int = _int->integer_;
+    } else if ((_double = dynamic_cast<EDouble*>(v)) != nullptr)
+    {
+        val.Dbl = _double->double_;
+    } else if ((_string = dynamic_cast<EString*>(v)) != nullptr)
+    {
+        val.Str = _string->string_;
+    } else if ((_id = dynamic_cast<EId*>(v)))
+    {
+        val = variables[_id->id_].second;
+    }
+    else {
+        throw new std::invalid_argument("Expected Constant");
+    }
+    return val;
 }
 
 
@@ -99,7 +92,7 @@ void ConstantFolder::visitDFun(DFun *dfun)
     delete(_dfun->liststm_);
     removeVar();
     _dfun->liststm_ = dynamic_cast<ListStm*>(fold(dfun->liststm_));
-    _tree = dfun;
+    _tree = _dfun;
     removeVar();
 }
 
@@ -111,7 +104,7 @@ void ConstantFolder::visitADecl(ADecl *adecl)
     visitId(adecl->id_);
 */
     // TODO Add Variable handling
-    _tree = adecl;
+    _tree = adecl->clone();
 }
 
 void ConstantFolder::visitSExp(SExp *sexp)
@@ -158,7 +151,7 @@ void ConstantFolder::visitSReturn(SReturn *sreturn)
 void ConstantFolder::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
     /* Code For SReturnVoid Goes Here */
-    _tree = sreturnvoid;
+    _tree = sreturnvoid->clone();
 }
 
 void ConstantFolder::visitSWhile(SWhile *swhile)
@@ -213,26 +206,31 @@ void ConstantFolder::visitSIfElse(SIfElse *sifelse)
 void ConstantFolder::visitETrue(ETrue *etrue)
 {
     /* Code For ETrue Goes Here */
+    _tree = new ETrue;
 }
 
 void ConstantFolder::visitEFalse(EFalse *efalse)
 {
     /* Code For EFalse Goes Here */
+    _tree = new EFalse;
 }
 
 void ConstantFolder::visitEInt(EInt *eint)
 {
     /* Code For EInt Goes Here */
+    _tree = new EInt(eint->integer_);
 }
 
 void ConstantFolder::visitEDouble(EDouble *edouble)
 {
     /* Code For EDouble Goes Here */
+    _tree = new EDouble(edouble->double_);
 }
 
 void ConstantFolder::visitEString(EString *estring)
 {
     /* Code For EString Goes Here */
+    _tree = new EString(estring->string_);
 }
 
 void ConstantFolder::visitEId(EId *eid)
@@ -280,29 +278,36 @@ void ConstantFolder::visitEApp(EApp *eapp)
     // TODO Support for function calls?
 }
 
+// ToDo ?? Keep Variables intact if possible?
 void ConstantFolder::visitEPIncr(EPIncr *epincr)
 {
     /* Code For EPIncr Goes Here */
     _tree = epincr->clone();
-
+    removeVar();
 }
 
 void ConstantFolder::visitEPDecr(EPDecr *epdecr)
 {
     /* Code For EPDecr Goes Here */
     _tree = epdecr->clone();
+    removeVar();
+
 }
 
 void ConstantFolder::visitEIncr(EIncr *eincr)
 {
     /* Code For EIncr Goes Here */
     _tree = eincr->clone();
+    removeVar();
+
 }
 
 void ConstantFolder::visitEDecr(EDecr *edecr)
 {
     /* Code For EDecr Goes Here */
     _tree = edecr->clone();
+    removeVar();
+
 }
 
 void ConstantFolder::visitETimes(ETimes *etimes)

@@ -10,14 +10,19 @@
 class ConstantFolder : public Visitor
 {
 private:
-    Visitable*  _tree;
-
     struct value {
         Double Dbl;
         Integer Int;
         String Str;
         bool Bl;
     };
+
+    Visitable*  _tree;
+    bool* _constant;
+    value* _value;
+    Types* _type;
+
+
     std::map<Id, std::pair<Types, value>> variables;
 
     std::unique_ptr<std::pair<Types, value>> lookup(Id id);
@@ -25,38 +30,17 @@ private:
     void removeVar(Id id);
     void setVar(Id id, Types type, ConstantFolder::value val);
 
-    Types       getType(Visitable *v);
-    Types       getType(ETrue *v);
-    Types       getType(EFalse *v);
-    Types       getType(EDouble *v);
-    Types       getType(EInt *v);
-    Types       getType(EString *v);
+    virtual Types       getType(Visitable *v);
 
-    value       getValue(Visitable *v);
-    value       getValue(ETrue *v);
-    value       getValue(EFalse *v);
-    value       getValue(EDouble *v);
-    value       getValue(EInt *v);
-    value       getValue(EString *v);
+    virtual value       getValue(Visitable *v);
 
 
-    bool        isConstant(Visitable *v) {
-        return false;
-    }
-    bool        isConstant(ETrue *v) {
-        return true;
-    }
-    bool        isConstant(EFalse *v) {
-        return true;
-    }
-    bool        isConstant(EDouble *v) {
-        return true;
-    }
-    bool        isConstant(EInt *v) {
-        return true;
-    }
-    bool        isConstant(EString *v) {
-        return true;
+
+    virtual bool        isConstant(Visitable *v) {
+        return dynamic_cast<ETrue*>(v) != nullptr || dynamic_cast<EFalse*>(v) != nullptr ||
+                dynamic_cast<EDouble*>(v) != nullptr ||
+                dynamic_cast<EInt*>(v) != nullptr ||
+                (dynamic_cast<EId*>(v) != nullptr && lookup(dynamic_cast<EId*>(v)->id_) != nullptr) ;
     }
 
 public:

@@ -12,6 +12,7 @@
 #include "Skeleton.H"
 #include "TypeChecker.H"
 #include "ConstantFolder.H"
+#include "CodeGenerator.H"
 
 int main(int argc, char ** argv)
 {
@@ -44,9 +45,12 @@ int main(int argc, char ** argv)
           SymbolTableBuilder builder;
           TypeChecker checker;
           ConstantFolder folder;
+          CodeGenerator generator;
           checker.setFunctionTable(builder.buildTable(parse_tree));
           parse_tree->accept(&checker);
+          std::cout << std::endl;
           auto foldedTree = folder.fold(parse_tree);
+          generator.codegen("test", foldedTree)->dump();
       } catch (std::exception &e)
       {
           std::cout << e.what() << std::endl;

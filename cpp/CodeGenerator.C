@@ -12,7 +12,7 @@ CodeGenerator::CodeGenerator() :
         _Builder(llvm::getGlobalContext()) {
 }
 
-std::unique_ptr<llvm::Module> CodeGenerator::codegen(std::string name, Program* v)
+std::unique_ptr<llvm::Module>& CodeGenerator::codegen(std::string name, Visitable* v)
 {
     _Module.reset(new llvm::Module(name, llvm::getGlobalContext()));
     _namedValues.clear();
@@ -31,27 +31,7 @@ llvm::Value* CodeGenerator::visit(Visitable *v) {
 
 
 llvm::Type *CodeGenerator::getType(Type *t) {
-    return nullptr;
-}
-
-llvm::Type *CodeGenerator::getType(Type_bool *t) {
-    return llvm::Type::getInt1Ty(llvm::getGlobalContext());
-}
-
-llvm::Type *CodeGenerator::getType(Type_int *t) {
-    return llvm::Type::getInt32Ty(llvm::getGlobalContext());
-}
-
-llvm::Type *CodeGenerator::getType(Type_double *t) {
-    return llvm::Type::getDoubleTy(llvm::getGlobalContext());
-}
-
-llvm::Type *CodeGenerator::getType(Type_string *t) {
-    throw (new std::invalid_argument("String not supported"));
-}
-
-llvm::Type *CodeGenerator::getType(Type_void *t) {
-    return llvm::Type::getVoidTy(llvm::getGlobalContext());
+    return t->getLLVMType();
 }
 
 
@@ -86,7 +66,7 @@ void CodeGenerator::visitDFun(DFun *dfun)
     }
 
     auto *FT = llvm::FunctionType::get(getType(dfun->type_),
-                                         args_t, false);
+            llvm::makeArrayRef(args_t), false);
 
     auto *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, dfun->id_, _Module.get());
 
@@ -153,7 +133,7 @@ void CodeGenerator::visitSExp(SExp *sexp)
 {
   /* Code For SExp Goes Here */
 
-  _value = visit(sexp);
+  _value = visit(sexp->exp_);
 
 }
 
@@ -183,7 +163,7 @@ void CodeGenerator::visitSInit(SInit *sinit)
 
     _namedValues.back()[sinit->id_] = new AllocPair(getType(sinit->type_), aloc);
 
-    _value = _Builder.CreateLoad(visit(sinit->exp_), aloc);
+    _value = _Builder.CreateStore(visit(sinit->exp_), aloc);
 }
 
 void CodeGenerator::visitSReturn(SReturn *sreturn)
@@ -201,9 +181,15 @@ void CodeGenerator::visitSReturnVoid(SReturnVoid *sreturnvoid)
 void CodeGenerator::visitSWhile(SWhile *swhile)
 {
   /* Code For SWhile Goes Here */
+    auto cond = visit(swhile->exp_);
 
-  swhile->exp_->accept(this);
-  swhile->stm_->accept(this);
+    auto F = _Builder.GetInsertBlock()->getParent();
+
+    auto ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", F);
+    auto ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
+
+    swhile->stm_->accept(this);
+    // ToDo Implement While Loop
 
 }
 
@@ -218,7 +204,7 @@ void CodeGenerator::visitSBlock(SBlock *sblock)
 void CodeGenerator::visitSIfElse(SIfElse *sifelse)
 {
   /* Code For SIfElse Goes Here */
-
+    _namedValues.push_back(AllocMap());
     auto cond = visit(sifelse);
 
     auto F = _Builder.GetInsertBlock()->getParent();
@@ -253,8 +239,7 @@ void CodeGenerator::visitSIfElse(SIfElse *sifelse)
     F->getBasicBlockList().push_back(MergeBB);
     _Builder.SetInsertPoint(MergeBB);
 
-    sifelse->exp_->accept(this);
-
+    _namedValues.pop_back();
 }
 
 void CodeGenerator::visitETrue(ETrue *etrue)
@@ -273,7 +258,7 @@ void CodeGenerator::visitEFalse(EFalse *efalse)
 void CodeGenerator::visitEInt(EInt *eint)
 {
   /* Code For EInt Goes Here */
-    _value = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(Integer), (uint64_t) eint->integer_));
+    _value = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(32, (uint64_t) eint->integer_));
 }
 
 void CodeGenerator::visitEDouble(EDouble *edouble)
@@ -294,7 +279,7 @@ void CodeGenerator::visitEId(EId *eid)
 {
   /* Code For EId Goes Here */
 
-    auto var = _namedValues.back()[eid->id_];
+    auto var = lookup(eid->id_);
     if (var == nullptr)
         throw (new std::runtime_error("Referencing unknown Variable Name"));
 
@@ -339,7 +324,7 @@ void CodeGenerator::visitEApp(EApp *eapp)
         args_vec.push_back(args_arr + i);
     }
 
-    _value = _Builder.CreateCall(Function, args_vec, "call");
+    _value = _Builder.CreateCall(Function, llvm::makeArrayRef(args_vec), "call");
 }
 
 void CodeGenerator::visitEPIncr(EPIncr *epincr)
@@ -347,31 +332,117 @@ void CodeGenerator::visitEPIncr(EPIncr *epincr)
     /* Code For EPIncr Goes Here */
     auto v = visit(epincr->exp_);
 
+    auto alloc = lookup(v->getName());
+    if (alloc == nullptr)
+        throw (new std::runtime_error("Referencing unknown Variable Name"));
 
+    auto v1 = _Builder.CreateLoad(alloc->second);
+    llvm::Value* result;
+
+    switch (alloc->first->getTypeID())
+    {
+        case llvm::Type::IntegerTyID:
+            result = _Builder.CreateAdd(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
+            break;
+        case llvm::Type::DoubleTyID:
+            result = _Builder.CreateFAdd(v1, llvm::ConstantFP::get(llvm::getGlobalContext(),llvm::APFloat(1.0)));
+            break;
+        default:
+            throw (new std::invalid_argument("Unexpected Type"));
+    }
+
+    _Builder.CreateStore(result, alloc->second);
+
+    _value = v1;
 }
 
 void CodeGenerator::visitEPDecr(EPDecr *epdecr)
 {
   /* Code For EPDecr Goes Here */
+/* Code For EPIncr Goes Here */
+    auto v = visit(epdecr->exp_);
 
-  epdecr->exp_->accept(this);
+    auto alloc = lookup(v->getName());
+    if (alloc == nullptr)
+        throw (new std::runtime_error("Referencing unknown Variable Name"));
 
+    auto v1 = _Builder.CreateLoad(alloc->second);
+    llvm::Value* result;
+
+    switch (alloc->first->getTypeID())
+    {
+        case llvm::Type::IntegerTyID:
+            result = _Builder.CreateSub(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
+            break;
+        case llvm::Type::DoubleTyID:
+            result = _Builder.CreateFSub(v1, llvm::ConstantFP::get(llvm::getGlobalContext(),llvm::APFloat(1.0)));
+            break;
+        default:
+            throw (new std::invalid_argument("Unexpected Type"));
+    }
+
+    _Builder.CreateStore(result, alloc->second);
+
+    _value = v1;
 }
 
 void CodeGenerator::visitEIncr(EIncr *eincr)
 {
   /* Code For EIncr Goes Here */
+    auto v = visit(eincr->exp_);
 
-  eincr->exp_->accept(this);
+    auto alloc = lookup(v->getName());
+    if (alloc == nullptr)
+        throw (new std::runtime_error("Referencing unknown Variable Name"));
+
+    auto v1 = _Builder.CreateLoad(alloc->second);
+    llvm::Value* result;
+
+    switch (alloc->first->getTypeID())
+    {
+        case llvm::Type::IntegerTyID:
+            result = _Builder.CreateAdd(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
+            break;
+        case llvm::Type::DoubleTyID:
+            result = _Builder.CreateFAdd(v1, llvm::ConstantFP::get(llvm::getGlobalContext(),llvm::APFloat(1.0)));
+            break;
+        default:
+            throw (new std::invalid_argument("Unexpected Type"));
+    }
+
+    _Builder.CreateStore(result, alloc->second);
+
+    _value = result;
 
 }
 
 void CodeGenerator::visitEDecr(EDecr *edecr)
 {
   /* Code For EDecr Goes Here */
+    auto v = visit(edecr->exp_);
 
-  edecr->exp_->accept(this);
+    auto alloc = lookup(v->getName());
+    if (alloc == nullptr)
+        throw (new std::runtime_error("Referencing unknown Variable Name"));
 
+    auto v1 = _Builder.CreateLoad(alloc->second);
+    llvm::Value* result;
+
+    switch (alloc->first->getTypeID())
+    {
+        case llvm::Type::IntegerTyID:
+            result = _Builder.CreateSub(v1, llvm::ConstantInt::get(llvm::getGlobalContext(),llvm::APInt(32, 1)));
+            break;
+        case llvm::Type::DoubleTyID:
+            result = _Builder.CreateFSub(v1, llvm::ConstantFP::get(llvm::getGlobalContext(),llvm::APFloat(1.0)));
+            break;
+        default:
+            throw (new std::invalid_argument("Unexpected Type"));
+    }
+
+    _Builder.CreateStore(result, alloc->second);
+
+    _value = result;
 }
 
 void CodeGenerator::visitETimes(ETimes *etimes)

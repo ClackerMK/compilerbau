@@ -5,16 +5,16 @@
 
 int foo(double x, int y)
 {
-	return y + 9 ;
+	return 10 + 9 ;
 }
 
 int main()
 {
-	int i = 1;
+	int i = 1 + 9;
 	double d = 0.9;
 	int a,b,c;
 
-	i = foo(d,i);
+	//foo(0.9,10);
 
 	return i;
 }
